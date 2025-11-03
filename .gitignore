@@ -39,3 +39,12 @@
 
 # debug information files
 *.dwo
+
+# build directories
+build*
+debug*
+release*
+
+# clang directories
+.cache*
+compile_commands.json
