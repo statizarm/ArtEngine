@@ -56,6 +56,8 @@ void TGameEngineImpl::run(IGame *game) {
     glEnable(GL_DEPTH_TEST);
     game->init();
     auto start = glfwGetTime();
+    TRenderingContext context;
+    context.start_time = start;
     while (!window_->shouldClose()) {
         ///////////////////////////////////////////////////////////////////////
         // NOTE: DRAW
@@ -75,14 +77,15 @@ void TGameEngineImpl::run(IGame *game) {
         window_->swapBuffers();
         glfwPollEvents();
 
-        auto duration = glfwGetTime() - start;
+        context.current_time = glfwGetTime();
+        context.dt           = context.current_time - start;
         ///////////////////////////////////////////////////////////////////////
         // NOTE: update physics
 
         ///////////////////////////////////////////////////////////////////////
         // NOTE: update game
 
-        game->update(duration);
+        game->update(context);
 
         start = glfwGetTime();
     }

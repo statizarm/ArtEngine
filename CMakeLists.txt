@@ -9,3 +9,4 @@ add_subdirectory(engine)
 add_subdirectory(examples)
 
 target_link_libraries(window engine)
+target_link_libraries(simple-ecs engine)

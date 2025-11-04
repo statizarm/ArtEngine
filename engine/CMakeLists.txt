@@ -23,13 +23,23 @@ find_package(OpenGL REQUIRED)
 set(INCLUDES_DIR include)
 set(
     INCLUDES
+    ${INCLUDES_DIR}/component.hpp
+    ${INCLUDES_DIR}/component_type_id.hpp
+    ${INCLUDES_DIR}/ecs_engine.hpp
     ${INCLUDES_DIR}/engine.hpp
+    ${INCLUDES_DIR}/entities_view.hpp
+    ${INCLUDES_DIR}/entity.hpp
+    ${INCLUDES_DIR}/entity_id.hpp
     ${INCLUDES_DIR}/game.hpp
+    ${INCLUDES_DIR}/rendering_context.hpp
+    ${INCLUDES_DIR}/system.hpp
     ${INCLUDES_DIR}/window.hpp
 )
 set(
     SOURCES
+    src/ecs_engine.cpp
     src/engine.cpp
+    src/entity.cpp
     src/game.cpp
     src/window.cpp
 )

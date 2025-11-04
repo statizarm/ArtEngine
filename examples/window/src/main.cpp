@@ -2,7 +2,7 @@
 
 class TGame : public NArtEngine::IGame {
   public:
-    void update(float) override {
+    void update(const NArtEngine::TRenderingContext&) override {
     }
 };
 
