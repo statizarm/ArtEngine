@@ -32,8 +32,8 @@ static const char* kVertexShaderProgram =
     "layout (location = 0) in vec3 position;\n"
     "out vec4 fColor;\n"
     "void main() {\n"
-    "    fColor = vec4(color, 1);\n"
-    "    gl_Position = mvp * vec4(position, 1);\n"
+    "    fColor = vec4(position, 1);\n"
+    "    gl_Position = vec4(position, 1);\n"
     "}\n";
 static inline GLuint CreateVertexShader() {
     return CreateShader(GL_VERTEX_SHADER, kVertexShaderProgram);
@@ -41,6 +41,7 @@ static inline GLuint CreateVertexShader() {
 
 static const char* kFragmentShaderProgram =
     "#version 330 core\n"
+    "in vec4 fColor;\n"
     "out vec4 FragColor;\n"
     "void main() {\n"
     "    FragColor = fColor;\n"

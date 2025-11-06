@@ -2,7 +2,6 @@
 
 #include <filesystem>
 #include <fstream>
-#include <iostream>
 
 namespace NArtEngine {
 
@@ -22,9 +21,7 @@ enum EResourceFormat {
 };
 
 template <typename TResource, EResourceFormat Fromat>
-EResourceLoadStatus load_resource(std::istream&, TResource&) {
-    return EResourceLoadStatus::UNSUPPORTED_FORMAT;
-}
+EResourceLoadStatus load_resource(std::istream&, TResource&);
 
 class TResourceManager {
   public:
