@@ -31,7 +31,10 @@ set(
     ${INCLUDES_DIR}/entity.hpp
     ${INCLUDES_DIR}/entity_id.hpp
     ${INCLUDES_DIR}/game.hpp
+    ${INCLUDES_DIR}/mesh.hpp
     ${INCLUDES_DIR}/rendering_context.hpp
+    ${INCLUDES_DIR}/resource_manager.hpp
+    ${INCLUDES_DIR}/shader.hpp
     ${INCLUDES_DIR}/system.hpp
     ${INCLUDES_DIR}/window.hpp
 )
@@ -41,6 +44,9 @@ set(
     src/engine.cpp
     src/entity.cpp
     src/game.cpp
+    src/mesh.cpp
+    src/resource_manager.cpp
+    src/shader.cpp
     src/window.cpp
 )
 
