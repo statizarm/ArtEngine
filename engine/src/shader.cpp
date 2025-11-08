@@ -1,11 +1,12 @@
 #include "shader.hpp"
 
-// clang-format off
-#include <glad/gl.h>
-#include <GL/gl.h>
 #include <cstring>
 #include <iostream>
 #include <iterator>
+
+// clang-format off
+#include <glad/gl.h>
+#include <GL/gl.h>
 // clang-format on
 
 #include "resource_manager.hpp"
