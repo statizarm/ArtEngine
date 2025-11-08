@@ -30,9 +30,7 @@ static GLuint CreateShader(GLenum shader_type, const char* shader_program) {
 static const char* kVertexShaderProgram =
     "#version 330 core\n"
     "layout (location = 0) in vec3 position;\n"
-    "out vec4 fColor;\n"
     "void main() {\n"
-    "    fColor = vec4(position, 1);\n"
     "    gl_Position = vec4(position, 1);\n"
     "}\n";
 static inline GLuint CreateVertexShader() {
@@ -41,10 +39,9 @@ static inline GLuint CreateVertexShader() {
 
 static const char* kFragmentShaderProgram =
     "#version 330 core\n"
-    "in vec4 fColor;\n"
     "out vec4 FragColor;\n"
     "void main() {\n"
-    "    FragColor = fColor;\n"
+    "    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
     "}\n";
 static inline GLuint CreateFragmentShader() {
     return CreateShader(GL_FRAGMENT_SHADER, kFragmentShaderProgram);

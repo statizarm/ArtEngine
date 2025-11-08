@@ -1,11 +1,15 @@
 #pragma once
 
+#include "window.hpp"
+
 namespace NArtEngine {
 
 struct TRenderingContext {
-    float dt;
-    float start_time;
-    float current_time;
+    double dt;
+    double start_time;
+    double current_time;
+
+    TWindow* window;
 };
 
 }  // namespace NArtEngine

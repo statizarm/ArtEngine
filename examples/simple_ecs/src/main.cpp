@@ -1,69 +1,44 @@
 #include <iostream>
 
 #include "ecs_engine.hpp"
-#include "engine.hpp"
-#include "mesh.hpp"
-#include "resource_manager.hpp"
-#include "shader.hpp"
+#include "game_engine.hpp"
 #include "system.hpp"
 
-class TPrintEntitySystem : public NArtEngine::TSystem {
+class TPrintFrameTimeSystem : public NArtEngine::TSystem {
   protected:
     void do_run(
         const NArtEngine::TRenderingContext& context,
         const NArtEngine::TEntitiesView& entities
     ) override {
-        auto time_delta = context.current_time - context.start_time;
-        for (const auto& entity : entities) {
-            if (time_delta - static_cast<int>(time_delta) > 0.9)
-                std::cout << &entity << std::endl;
-        }
+        std::cout << "frame_time: " << context.dt << std::endl;
+        std::cout << "fps: " << 1 / context.dt << std::endl;
     }
 };
 
 class TGame : public NArtEngine::IGame {
   public:
-    TGame()
-        : engine_(), resource_manager_() {
+    TGame(NArtEngine::TGameEngine* game_engine)
+        : game_engine_(game_engine) {
     }
+
     void init() override {
-        triangle_entity_ = engine_.add_entity();
-        auto& shader_component =
-            engine_.add_entity_component<NArtEngine::TShaderProgramComponent>(
-                triangle_entity_
-            );
-        auto& mesh_component =
-            engine_.add_entity_component<NArtEngine::TMeshComponent>(
-                triangle_entity_
-            );
+        auto& ecs_engine = game_engine_->get_ecs_engine();
 
-        auto res = resource_manager_.load(
-            "resources/triangle_mesh.txt", mesh_component
-        );
-        std::cout << res << std::endl;
-        res = resource_manager_.load(
-            "resources/triangle_shader.txt", shader_component
-        );
-        std::cout << res << std::endl;
-
-        engine_.add_system(std::make_unique<TPrintEntitySystem>());
+        ecs_engine.add_system(std::make_unique<TPrintFrameTimeSystem>());
     }
     void update(const NArtEngine::TRenderingContext& context) override {
-        engine_.update(context);
     }
     void deinit() override {
-        engine_.remove_entity(triangle_entity_);
     }
 
   private:
-    NArtEngine::TECSEngine engine_;
+    NArtEngine::TGameEngine* game_engine_;
     NArtEngine::TEntityID triangle_entity_;
-    NArtEngine::TResourceManager resource_manager_;
 };
 
 int main() {
     NArtEngine::TGameEngine engine;
-    TGame game;
+    TGame game(&engine);
 
     engine.init();
     engine.run(&game);

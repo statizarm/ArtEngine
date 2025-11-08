@@ -28,17 +28,17 @@ class TWindow {
     std::pair<double, double> cursor_position() const;
 
   public:
-    bool shouldClose();
+    bool should_close();
 
-    void bindCurrentContext();
-    void swapBuffers();
+    void bind_current_context();
+    void swap_buffers();
 
-    void grabCursor();
-    void ungrabCursor();
+    void grab_cursor();
+    void ungrab_cursor();
 
-    void registerKeyboardKeyCallback(TKeyboardKeyCallback callback);
-    void registerMouseKeyCallback(TMouseKeyCallback callback);
-    void registerCursorPositionCallback(TCursorPositionCallback callback);
+    void register_keyboard_key_callback(TKeyboardKeyCallback callback);
+    void register_mouse_key_callback(TMouseKeyCallback callback);
+    void register_cursor_position_callback(TCursorPositionCallback callback);
 
   private:
     TWindow(std::unique_ptr<TWindowImpl> impl);

@@ -2,6 +2,14 @@
 
 namespace NArtEngine {
 
+TResourceManager::TResourceManager()
+    : TResourceManager(TResourceManagerConfig{}) {
+}
+
+TResourceManager::TResourceManager(const TResourceManagerConfig& config)
+    : config_(config) {
+}
+
 EResourceFormat TResourceManager::get_format(std::filesystem::path filepath) {
     if (!filepath.has_extension()) {
         return EResourceFormat::UNKNOWN;

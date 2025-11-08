@@ -19,7 +19,7 @@ class TSystem {
     virtual ~TSystem() = default;
 
   public:
-    void run(const TRenderingContext& context, const TEntitiesView& view) {
+    void run(const TRenderingContext& context, TEntitiesView& view) {
         if (mode_ == ESystemMode::DISABLED) {
             return;
         }

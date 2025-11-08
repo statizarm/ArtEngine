@@ -3,6 +3,8 @@
 #include <filesystem>
 #include <fstream>
 
+#include "resource_manager_config.hpp"
+
 namespace NArtEngine {
 
 enum EResourceLoadStatus {
@@ -25,10 +27,17 @@ EResourceLoadStatus load_resource(std::istream&, TResource&);
 
 class TResourceManager {
   public:
+    TResourceManager();
+    TResourceManager(const TResourceManagerConfig&);
+
+  public:
     template <typename TResource>
     EResourceLoadStatus load(
         std::filesystem::path filepath, TResource& resource
     ) {
+        if (!filepath.is_absolute()) {
+            filepath = config_.resources_directory / filepath;
+        }
         if (!std::filesystem::exists(filepath)) {
             return EResourceLoadStatus::FILE_DONT_EXISTS;
         } else if (!std::filesystem::is_regular_file(filepath)) {
@@ -54,6 +63,7 @@ class TResourceManager {
     EResourceFormat get_format(std::filesystem::path filepath);
 
   private:
+    TResourceManagerConfig config_;
 };
 
 }  // namespace NArtEngine

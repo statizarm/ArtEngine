@@ -1,4 +1,4 @@
-#include "engine.hpp"
+#include "game_engine.hpp"
 
 class TGame : public NArtEngine::IGame {
   public:

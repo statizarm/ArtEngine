@@ -19,14 +19,12 @@ EResourceLoadStatus load_resource<TMeshComponent, EResourceFormat::TEXT>(
     std::istream& in, TMeshComponent& mesh
 ) {
     std::vector<glm::vec3> vertices;
-    while (in) {
-        vertices.emplace_back();
-        for (int i = 0; i < 3; ++i) {
-            if (!in) {
-                return EResourceLoadStatus::BROKEN_FILE_CONTENT;
-            }
-            in >> vertices.back()[i];
+    float number;
+    for (size_t i = 0; (in >> number); ++i) {
+        if (i % 3 == 0) {
+            vertices.emplace_back();
         }
+        vertices[i / 3][i % 3] = number;
     }
 
     GLuint vbo;
@@ -38,7 +36,7 @@ EResourceLoadStatus load_resource<TMeshComponent, EResourceFormat::TEXT>(
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(
-        vbo,
+        GL_ARRAY_BUFFER,
         vertices.size() * sizeof(*vertices.data()),
         static_cast<void*>(vertices.data()),
         GL_STATIC_DRAW
@@ -48,7 +46,7 @@ EResourceLoadStatus load_resource<TMeshComponent, EResourceFormat::TEXT>(
         3,
         GL_FLOAT,
         GL_FALSE,
-        sizeof(*vertices.data()),
+        3 * sizeof(float),
         static_cast<void*>(0)
     );
     glEnableVertexAttribArray(kPositionAttribLocation);

@@ -15,22 +15,17 @@ class TEntity {
 
   public:
     template <CComponent TComponent>
-    const TComponent& get_component() const {
+    TComponent& get_component() const {
         return engine_->get_entity_component<TComponent>(entity_id_);
     }
 
     template <CComponent TComponent>
-    TComponent& GetComponent() {
-        return engine_->get_entity_component<TComponent>(entity_id_);
-    }
-
-    template <CComponent TComponent>
-    bool HasComponent() {
+    bool has_component() const {
         return engine_->has_entity_component<TComponent>(entity_id_);
     }
 
     template <CComponent TComponent>
-    TComponent& AddComponent() {
+    TComponent& add_component() const {
         return engine_->add_entity_component<TComponent>(entity_id_);
     }
 

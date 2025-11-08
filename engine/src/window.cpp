@@ -15,18 +15,20 @@ class TWindowImpl {
     virtual std::pair<double, double> cursor_position() const = 0;
 
   public:
-    virtual bool shouldClose() = 0;
+    virtual bool should_close() = 0;
 
-    virtual void bindCurrentContext() = 0;
-    virtual void swapBuffers()        = 0;
+    virtual void bind_current_context() = 0;
+    virtual void swap_buffers()         = 0;
 
-    virtual void grabCursor()   = 0;
-    virtual void ungrabCursor() = 0;
+    virtual void grab_cursor()   = 0;
+    virtual void ungrab_cursor() = 0;
 
-    virtual void registerKeyboardKeyCallback(TKeyboardKeyCallback callback) = 0;
-    virtual void registerMouseKeyCallback(TMouseKeyCallback callback)       = 0;
-    virtual void registerCursorPositionCallback(TCursorPositionCallback callback
-    )                                                                       = 0;
+    virtual void register_keyboard_key_callback(TKeyboardKeyCallback callback
+    )                                                                    = 0;
+    virtual void register_mouse_key_callback(TMouseKeyCallback callback) = 0;
+    virtual void register_cursor_position_callback(
+        TCursorPositionCallback callback
+    ) = 0;
 };
 
 class TGLFWWindow : public TWindowImpl {
@@ -39,18 +41,17 @@ class TGLFWWindow : public TWindowImpl {
     virtual std::pair<double, double> cursor_position() const override;
 
   public:
-    bool shouldClose() override;
+    bool should_close() override;
 
-    void bindCurrentContext() override;
-    void swapBuffers() override;
+    void bind_current_context() override;
+    void swap_buffers() override;
 
-    void grabCursor() override;
-    void ungrabCursor() override;
+    void grab_cursor() override;
+    void ungrab_cursor() override;
 
-    void registerKeyboardKeyCallback(TKeyboardKeyCallback callback) override;
-    void registerMouseKeyCallback(TMouseKeyCallback callback) override;
-    void registerCursorPositionCallback(TCursorPositionCallback callback
-    ) override;
+    void register_keyboard_key_callback(TKeyboardKeyCallback) override;
+    void register_mouse_key_callback(TMouseKeyCallback) override;
+    void register_cursor_position_callback(TCursorPositionCallback) override;
 
   private:
     GLFWwindow* window_;
@@ -78,37 +79,38 @@ std::pair<double, double> TGLFWWindow::cursor_position() const {
     return {xpos, ypos};
 }
 
-bool TGLFWWindow::shouldClose() {
+bool TGLFWWindow::should_close() {
     return glfwWindowShouldClose(window_);
 }
 
-void TGLFWWindow::bindCurrentContext() {
+void TGLFWWindow::bind_current_context() {
     glfwMakeContextCurrent(window_);
 }
 
-void TGLFWWindow::swapBuffers() {
+void TGLFWWindow::swap_buffers() {
     glfwSwapBuffers(window_);
 }
 
-void TGLFWWindow::grabCursor() {
+void TGLFWWindow::grab_cursor() {
     glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
-void TGLFWWindow::ungrabCursor() {
+void TGLFWWindow::ungrab_cursor() {
     glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
-void TGLFWWindow::registerKeyboardKeyCallback(TKeyboardKeyCallback callback) {
+void TGLFWWindow::register_keyboard_key_callback(TKeyboardKeyCallback callback
+) {
     glfwSetKeyCallback(window_, reinterpret_cast<GLFWkeyfun>(callback));
 }
 
-void TGLFWWindow::registerMouseKeyCallback(TMouseKeyCallback callback) {
+void TGLFWWindow::register_mouse_key_callback(TMouseKeyCallback callback) {
     glfwSetMouseButtonCallback(
         window_, reinterpret_cast<GLFWmousebuttonfun>(callback)
     );
 }
 
-void TGLFWWindow::registerCursorPositionCallback(
+void TGLFWWindow::register_cursor_position_callback(
     TCursorPositionCallback callback
 ) {
     glfwSetCursorPosCallback(
@@ -158,36 +160,37 @@ std::pair<double, double> TWindow::cursor_position() const {
     return impl_->cursor_position();
 }
 
-bool TWindow::shouldClose() {
-    return impl_->shouldClose();
+bool TWindow::should_close() {
+    return impl_->should_close();
 }
 
-void TWindow::bindCurrentContext() {
-    return impl_->bindCurrentContext();
+void TWindow::bind_current_context() {
+    return impl_->bind_current_context();
 }
 
-void TWindow::swapBuffers() {
-    return impl_->swapBuffers();
+void TWindow::swap_buffers() {
+    return impl_->swap_buffers();
 }
 
-void TWindow::grabCursor() {
-    impl_->grabCursor();
+void TWindow::grab_cursor() {
+    impl_->grab_cursor();
 }
 
-void TWindow::ungrabCursor() {
-    impl_->ungrabCursor();
+void TWindow::ungrab_cursor() {
+    impl_->ungrab_cursor();
 }
 
-void TWindow::registerKeyboardKeyCallback(TKeyboardKeyCallback callback) {
-    impl_->registerKeyboardKeyCallback(std::move(callback));
+void TWindow::register_keyboard_key_callback(TKeyboardKeyCallback callback) {
+    impl_->register_keyboard_key_callback(std::move(callback));
 }
 
-void TWindow::registerMouseKeyCallback(TMouseKeyCallback callback) {
-    impl_->registerMouseKeyCallback(std::move(callback));
+void TWindow::register_mouse_key_callback(TMouseKeyCallback callback) {
+    impl_->register_mouse_key_callback(std::move(callback));
 }
 
-void TWindow::registerCursorPositionCallback(TCursorPositionCallback callback) {
-    impl_->registerCursorPositionCallback(std::move(callback));
+void TWindow::register_cursor_position_callback(TCursorPositionCallback callback
+) {
+    impl_->register_cursor_position_callback(std::move(callback));
 }
 
 TWindow::TWindow(std::unique_ptr<TWindowImpl> impl)
