@@ -26,29 +26,13 @@ class TECSEngine {
 
   public:
     template <CComponent TComponent>
-    inline TComponent& get_entity_component(TEntityID entity_id) {
-        return *static_cast<TComponent*>(
-            get_entity_component(entity_id, TComponent::get_component_type_id())
-        );
-    }
+    inline TComponent& get_entity_component(TEntityID entity_id);
     template <CComponent TComponent>
-    inline bool has_entity_component(TEntityID entity_id) {
-        return has_entity_component(
-            entity_id, TComponent::get_component_type_id()
-        );
-    }
+    inline bool has_entity_component(TEntityID entity_id);
     template <CComponent TComponent>
-    TComponent& add_entity_component(TEntityID entity_id) {
-        auto component_type_id = TComponent::get_component_type_id();
-        auto component_meta    = get_component_meta<TComponent>();
-        return *static_cast<TComponent*>(
-            add_entity_component(entity_id, component_type_id, component_meta)
-        );
-    }
+    TComponent& add_entity_component(TEntityID entity_id);
     template <CComponent TComponent>
-    inline void remove_entity_component(TEntityID entity_id) {
-        remove_entity_component(entity_id, TComponent::get_component_type_id());
-    }
+    inline void remove_entity_component(TEntityID entity_id);
 
     void* get_entity_component(TEntityID, TComponentTypeID);
     bool has_entity_component(TEntityID, TComponentTypeID);
@@ -80,19 +64,7 @@ class TECSEngine {
     void* add_entity_component(TEntityID, TComponentTypeID, TComponentMeta);
 
     template <CComponent TComponent>
-    TComponentMeta get_component_meta() {
-        return TComponentMeta{
-            .component_size = sizeof(TComponent),
-            .constructor =
-                [](void* memory) {
-                    *static_cast<TComponent*>(memory) = TComponent();
-                },
-            .destructor =
-                [](void* memory) {
-                    static_cast<TComponent*>(memory)->~TComponent();
-                },
-        };
-    }
+    TComponentMeta get_component_meta();
 
   private:
     std::vector<std::bitset<kMaxComponents>> components_mask_;
@@ -101,3 +73,5 @@ class TECSEngine {
 };
 
 }  // namespace NArtEngine
+
+#include "ecs_engine-inl.hpp"
