@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include "ecs_engine.hpp"
 #include "game_engine.hpp"
 #include "mesh.hpp"
@@ -59,8 +61,24 @@ class TGame : public NArtEngine::IGame {
             std::make_unique<NArtEngine::TResourceManagerSystem>()
         );
     }
+
     void update(const NArtEngine::TRenderingContext& context) override {
+        auto filepath =
+            std::filesystem::path(__FILE__).parent_path().parent_path() /
+            std::filesystem::path("resources/triangle_mesh.txt");
+
+        std::ofstream out(filepath);
+        auto y = std::sin(context.current_time);
+        auto x = std::cos(context.current_time);
+
+        out << x << " " << y << " " << 0.0 << std::endl;
+        out << x << " " << -y << " " << 0.0 << std::endl;
+        out << -x << " " << -y << " " << 0.0 << std::endl;
+        out << x << " " << y << " " << 0.0 << std::endl;
+        out << -x << " " << y << " " << 0.0 << std::endl;
+        out << -x << " " << -y << " " << 0.0 << std::endl;
     }
+
     void deinit() override {
     }
 
