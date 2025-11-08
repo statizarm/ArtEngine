@@ -41,17 +41,13 @@ class TGame : public NArtEngine::IGame {
 
         resource_managed_component.resource_manager = &resource_manager_;
 
-        auto res = resource_manager_.load(
-            "resources/triangle_mesh.txt", mesh_component
-        );
+        auto res = resource_manager_.load("resources/mesh.txt", mesh_component);
         if (res.status == NArtEngine::EResourceLoadStatus::OK) {
             resource_managed_component
                 .component_resources[mesh_component.get_component_type_id()] =
                 res.resource_id;
         }
-        res = resource_manager_.load(
-            "resources/triangle_shader.glsl", shader_component
-        );
+        res = resource_manager_.load("resources/shader.glsl", shader_component);
         if (res.status == NArtEngine::EResourceLoadStatus::OK) {
             resource_managed_component
                 .component_resources[shader_component.get_component_type_id()] =
@@ -65,7 +61,7 @@ class TGame : public NArtEngine::IGame {
     void update(const NArtEngine::TRenderingContext& context) override {
         auto filepath =
             std::filesystem::path(__FILE__).parent_path().parent_path() /
-            std::filesystem::path("resources/triangle_mesh.txt");
+            std::filesystem::path("resources/mesh.txt");
 
         std::ofstream out(filepath);
         auto y = std::sin(context.current_time);
