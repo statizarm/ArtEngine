@@ -16,9 +16,8 @@ class TSystem;
 
 class TECSEngine {
   public:
-    static constexpr size_t kMaxEntities = 1 << 16;
-    static constexpr size_t kMaxComponents =
-        std::numeric_limits<TComponentTypeID>::max();
+    static constexpr size_t kMaxEntities   = 1 << 16;
+    static constexpr size_t kMaxComponents = 256;
 
   public:
     TECSEngine();

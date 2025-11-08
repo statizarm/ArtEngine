@@ -1,9 +1,9 @@
 #pragma once
 
-#include <cstdint>
+#include "identifier.hpp"
 
 namespace NArtEngine {
 
-using TComponentTypeID = uint8_t;
+using TComponentTypeID = NArtEngineUtils::TIdentifier;
 
 };

@@ -11,10 +11,6 @@ struct TResourceManagedComponent
     : public TComponent<TResourceManagedComponent> {
     std::unordered_map<TComponentTypeID, TResourceID> component_resources;
     TResourceManager* resource_manager;
-
-    static TComponentTypeID get_component_type_id() {
-        return 5;
-    }
 };
 
 }  // namespace NArtEngine

@@ -67,6 +67,7 @@ target_include_directories(
 
 target_link_libraries(
   engine
+  PUBLIC utils
   PUBLIC glfw
   PUBLIC OpenGL::GL
   PRIVATE glad

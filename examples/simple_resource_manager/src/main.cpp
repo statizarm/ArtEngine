@@ -1,22 +1,8 @@
-#include <iostream>
-
 #include "ecs_engine.hpp"
 #include "game_engine.hpp"
 #include "mesh.hpp"
 #include "resource_manager.hpp"
 #include "shader.hpp"
-#include "system.hpp"
-
-class TPrintFrameTimeSystem : public NArtEngine::TSystem {
-  protected:
-    void do_run(
-        const NArtEngine::TRenderingContext& context,
-        const NArtEngine::TEntitiesView& entities
-    ) override {
-        std::cout << "frame_time: " << context.dt << std::endl;
-        std::cout << "fps: " << 1 / context.dt << std::endl;
-    }
-};
 
 class TGame : public NArtEngine::IGame {
   public:
@@ -49,8 +35,6 @@ class TGame : public NArtEngine::IGame {
         res = resource_manager_.load(
             "resources/triangle_shader.glsl", shader_component
         );
-
-        // ecs_engine.add_system(std::make_unique<TPrintFrameTimeSystem>());
     }
     void update(const NArtEngine::TRenderingContext& context) override {
     }

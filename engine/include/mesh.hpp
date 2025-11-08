@@ -9,14 +9,8 @@
 namespace NArtEngine {
 
 struct TMeshComponent : public TComponent<TMeshComponent> {
-  public:
     uint32_t vao;
     size_t vertices_count;
-
-  public:
-    static TComponentTypeID get_component_type_id() {
-        return 2;
-    }
 };
 
 EResourceLoadStatus load_text_mesh(std::istream& in, TMeshComponent& mesh);

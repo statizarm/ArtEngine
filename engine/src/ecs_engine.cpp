@@ -4,12 +4,7 @@
 
 namespace NArtEngine {
 
-class TRemovedEntityComponent : public TComponent<TRemovedEntityComponent> {
-  public:
-    static TComponentTypeID get_component_type_id() {
-        return TComponentTypeID{0};
-    }
-};
+class TRemovedEntityComponent : public TComponent<TRemovedEntityComponent> {};
 
 TECSEngine::TECSEngine()
     : components_mask_(kMaxEntities, std::bitset<kMaxComponents>(0)) {
@@ -33,7 +28,9 @@ void* TECSEngine::get_entity_component(
 bool TECSEngine::has_entity_component(
     TEntityID entity_id, TComponentTypeID component_type_id
 ) {
-    return components_mask_[entity_id].test(component_type_id);
+    return components_mask_[entity_id].test(
+        static_cast<size_t>(component_type_id)
+    );
 }
 
 void* TECSEngine::add_entity_component(
@@ -47,7 +44,7 @@ void* TECSEngine::add_entity_component(
             new uint8_t[meta.component_size * kMaxEntities]
         );
     }
-    components_mask_[entity_id].set(component_type_id);
+    components_mask_[entity_id].set(static_cast<size_t>(component_type_id));
     void* component_memory = get_entity_component(entity_id, component_type_id);
     meta.constructor(component_memory);
     return get_entity_component(entity_id, component_type_id);
@@ -58,7 +55,7 @@ void TECSEngine::remove_entity_component(
 ) {
     const auto& meta = components_[component_type_id].meta;
     meta.destructor(get_entity_component(entity_id, component_type_id));
-    components_mask_[component_type_id][entity_id] = 0;
+    components_mask_[entity_id][static_cast<size_t>(component_type_id)] = 0;
 }
 
 TEntityID TECSEngine::add_entity() {
