@@ -23,28 +23,7 @@ TResourceLoadResult TResourceManager::load(
         };
     }
     auto resource_id = register_resource<TResource>(filepath);
-    return load(resource_id, resource);
-}
-
-template <typename TResource>
-TResourceLoadResult TResourceManager::load(
-    const TResourceID& resource_id, TResource& resource
-) {
-    // FIXME: resource leak
-    if (!registered_resources_.contains(resource_id)) {
-        return TResourceLoadResult{
-            .resource_id = resource_id,
-            .status      = EResourceLoadStatus::UNKNOWN_RESOURCE_ID,
-        };
-    }
-
-    const auto& resource_conrol_block = registered_resources_[resource_id];
-    return TResourceLoadResult{
-        .resource_id = resource_id,
-        .status      = resource_conrol_block.load(
-            resource_conrol_block.filepath, static_cast<void*>(&resource)
-        ),
-    };
+    return load(resource_id, static_cast<void*>(&resource));
 }
 
 template <typename TResource>
@@ -63,12 +42,15 @@ EResourceLoadStatus TResourceManager::load_resource_from_file(
             load_status = load_resource<TResource, EResourceFormat::TEXT>(
                 input_file, resource
             );
+            break;
         case EResourceFormat::GLSL:
             load_status = load_resource<TResource, EResourceFormat::GLSL>(
                 input_file, resource
             );
+            break;
         default:
             load_status = EResourceLoadStatus::UNKNOWN_FORMAT;
+            break;
     }
     return load_status;
 }

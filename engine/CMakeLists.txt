@@ -35,8 +35,10 @@ set(
     ${INCLUDES_DIR}/mesh.hpp
     ${INCLUDES_DIR}/rendering_context.hpp
     ${INCLUDES_DIR}/rendering_system.hpp
+    ${INCLUDES_DIR}/resource_managed_component.hpp
     ${INCLUDES_DIR}/resource_manager.hpp
     ${INCLUDES_DIR}/resource_manager_config.hpp
+    ${INCLUDES_DIR}/resource_manager_system.hpp
     ${INCLUDES_DIR}/shader.hpp
     ${INCLUDES_DIR}/system.hpp
     ${INCLUDES_DIR}/window.hpp
@@ -50,6 +52,7 @@ set(
     src/mesh.cpp
     src/rendering_system.cpp
     src/resource_manager.cpp
+    src/resource_manager_system.cpp
     src/shader.cpp
     src/window.cpp
 )

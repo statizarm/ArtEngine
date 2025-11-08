@@ -44,10 +44,7 @@ class TResourceManager {
         std::filesystem::path filepath, TResource& resource
     );
 
-    template <typename TResource>
-    TResourceLoadResult load(
-        const TResourceID& resource_id, TResource& resource
-    );
+    TResourceLoadResult load(const TResourceID&, void*);
 
   private:
     using TLoadFunction = EResourceLoadStatus (*)(std::filesystem::path, void*);

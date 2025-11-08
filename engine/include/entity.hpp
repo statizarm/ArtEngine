@@ -15,19 +15,25 @@ class TEntity {
 
   public:
     template <CComponent TComponent>
-    TComponent& get_component() const {
+    inline TComponent& get_component() const {
         return engine_->get_entity_component<TComponent>(entity_id_);
     }
-
     template <CComponent TComponent>
-    bool has_component() const {
+    inline bool has_component() const {
         return engine_->has_entity_component<TComponent>(entity_id_);
     }
-
     template <CComponent TComponent>
-    TComponent& add_component() const {
+    inline TComponent& add_component() const {
         return engine_->add_entity_component<TComponent>(entity_id_);
     }
+    template <CComponent TComponent>
+    inline void remove_component() const {
+        engine_->remove_entity_component<TComponent>(entity_id_);
+    }
+
+    void* get_component(TComponentTypeID) const;
+    bool has_component(TComponentTypeID) const;
+    void remove_component(TComponentTypeID) const;
 
   private:
     TEntity(TEntityID entity_id, TECSEngine* engine);

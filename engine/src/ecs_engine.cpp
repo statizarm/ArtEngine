@@ -21,6 +21,46 @@ TECSEngine::TECSEngine()
 TECSEngine::~TECSEngine() {
 }
 
+void* TECSEngine::get_entity_component(
+    TEntityID entity_id, TComponentTypeID component_type_id
+) {
+    const auto& storage = components_.at(component_type_id);
+    return static_cast<void*>(
+        storage.memory.get() + entity_id * storage.meta.component_size
+    );
+}
+
+bool TECSEngine::has_entity_component(
+    TEntityID entity_id, TComponentTypeID component_type_id
+) {
+    return components_mask_[entity_id].test(component_type_id);
+}
+
+void* TECSEngine::add_entity_component(
+    TEntityID entity_id, TComponentTypeID component_type_id, TComponentMeta meta
+) {
+    if (!components_.contains(component_type_id)) {
+        auto& storage = components_[component_type_id];
+
+        storage.meta   = meta;
+        storage.memory = std::unique_ptr<uint8_t>(
+            new uint8_t[meta.component_size * kMaxEntities]
+        );
+    }
+    components_mask_[entity_id].set(component_type_id);
+    void* component_memory = get_entity_component(entity_id, component_type_id);
+    meta.constructor(component_memory);
+    return get_entity_component(entity_id, component_type_id);
+}
+
+void TECSEngine::remove_entity_component(
+    TEntityID entity_id, TComponentTypeID component_type_id
+) {
+    const auto& meta = components_[component_type_id].meta;
+    meta.destructor(get_entity_component(entity_id, component_type_id));
+    components_mask_[component_type_id][entity_id] = 0;
+}
+
 TEntityID TECSEngine::add_entity() {
     for (size_t i = 0; i < components_mask_.size(); ++i) {
         if (has_entity_component<TRemovedEntityComponent>(TEntityID{i})) {

@@ -26,34 +26,33 @@ class TECSEngine {
 
   public:
     template <CComponent TComponent>
-    TComponent& get_entity_component(TEntityID entity_id) {
-        auto& ptr = components_[TComponent::get_component_type_id()];
-        return reinterpret_cast<TComponent*>(ptr.get())[entity_id];
-    }
-
-    template <CComponent TComponent>
-    bool has_entity_component(TEntityID entity_id) {
-        return components_mask_[entity_id].test(
-            TComponent::get_component_type_id()
+    inline TComponent& get_entity_component(TEntityID entity_id) {
+        return *static_cast<TComponent*>(
+            get_entity_component(entity_id, TComponent::get_component_type_id())
         );
     }
-
+    template <CComponent TComponent>
+    inline bool has_entity_component(TEntityID entity_id) {
+        return has_entity_component(
+            entity_id, TComponent::get_component_type_id()
+        );
+    }
     template <CComponent TComponent>
     TComponent& add_entity_component(TEntityID entity_id) {
         auto component_type_id = TComponent::get_component_type_id();
-        if (!components_.contains(component_type_id)) {
-            components_[component_type_id] = std::unique_ptr<uint8_t>(
-                reinterpret_cast<uint8_t*>(new TComponent[kMaxEntities])
-            );
-        }
-        components_mask_[entity_id].set(component_type_id);
-        return get_entity_component<TComponent>(entity_id);
+        auto component_meta    = get_component_meta<TComponent>();
+        return *static_cast<TComponent*>(
+            add_entity_component(entity_id, component_type_id, component_meta)
+        );
+    }
+    template <CComponent TComponent>
+    inline void remove_entity_component(TEntityID entity_id) {
+        remove_entity_component(entity_id, TComponent::get_component_type_id());
     }
 
-    template <CComponent TComponent>
-    void remove_entity_component(TEntityID entity_id) {
-        components_mask_[entity_id][TComponent::get_component_type_id()] = 0;
-    }
+    void* get_entity_component(TEntityID, TComponentTypeID);
+    bool has_entity_component(TEntityID, TComponentTypeID);
+    void remove_entity_component(TEntityID, TComponentTypeID);
 
     TEntityID add_entity();
     void remove_entity(TEntityID);
@@ -63,8 +62,41 @@ class TECSEngine {
     void update(const TRenderingContext& context);
 
   private:
+    using TConstructComponent = void (*)(void*);
+    using TDestructComponent  = void (*)(void*);
+
+  private:
+    struct TComponentMeta {
+        size_t component_size;
+        TConstructComponent constructor;
+        TDestructComponent destructor;
+    };
+    struct TComponentStorage {
+        TComponentMeta meta;
+        std::unique_ptr<uint8_t> memory;
+    };
+
+  private:
+    void* add_entity_component(TEntityID, TComponentTypeID, TComponentMeta);
+
+    template <CComponent TComponent>
+    TComponentMeta get_component_meta() {
+        return TComponentMeta{
+            .component_size = sizeof(TComponent),
+            .constructor =
+                [](void* memory) {
+                    *static_cast<TComponent*>(memory) = TComponent();
+                },
+            .destructor =
+                [](void* memory) {
+                    static_cast<TComponent*>(memory)->~TComponent();
+                },
+        };
+    }
+
+  private:
     std::vector<std::bitset<kMaxComponents>> components_mask_;
-    std::unordered_map<TComponentTypeID, std::unique_ptr<uint8_t>> components_;
+    std::unordered_map<TComponentTypeID, TComponentStorage> components_;
     std::vector<std::unique_ptr<TSystem>> systems_;
 };
 
