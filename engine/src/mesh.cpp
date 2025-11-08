@@ -14,10 +14,7 @@ namespace NArtEngine {
 
 static constexpr int kPositionAttribLocation = 0;
 
-template <>
-EResourceLoadStatus load_resource<TMeshComponent, EResourceFormat::TEXT>(
-    std::istream& in, TMeshComponent& mesh
-) {
+EResourceLoadStatus load_text_mesh(std::istream& in, TMeshComponent& mesh) {
     std::vector<glm::vec3> vertices;
     float number;
     for (size_t i = 0; (in >> number); ++i) {

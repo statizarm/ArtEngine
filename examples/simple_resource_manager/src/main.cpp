@@ -3,7 +3,6 @@
 #include "ecs_engine.hpp"
 #include "game_engine.hpp"
 #include "mesh.hpp"
-#include "rendering_system.hpp"
 #include "resource_manager.hpp"
 #include "shader.hpp"
 #include "system.hpp"
@@ -48,11 +47,10 @@ class TGame : public NArtEngine::IGame {
             "resources/triangle_mesh.txt", mesh_component
         );
         res = resource_manager_.load(
-            "resources/triangle_shader.txt", shader_component
+            "resources/triangle_shader.glsl", shader_component
         );
 
-        ecs_engine.add_system(std::make_unique<NArtEngine::TRenderingSystem>());
-        ecs_engine.add_system(std::make_unique<TPrintFrameTimeSystem>());
+        // ecs_engine.add_system(std::make_unique<TPrintFrameTimeSystem>());
     }
     void update(const NArtEngine::TRenderingContext& context) override {
     }

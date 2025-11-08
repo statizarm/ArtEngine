@@ -3,14 +3,18 @@
 // clang-format off
 #include <glad/gl.h>
 #include <GL/gl.h>
+#include <cstring>
 #include <iostream>
+#include <iterator>
 // clang-format on
 
 #include "resource_manager.hpp"
 
 namespace NArtEngine {
 
-static GLuint CreateShader(GLenum shader_type, const char* shader_program) {
+static constexpr const char* kShaderDelimiter = "// SHADER DELIMITER\n";
+
+static GLuint create_shader(GLenum shader_type, const char* shader_program) {
     GLuint shader = glCreateShader(shader_type);
     glShaderSource(shader, 1, &shader_program, NULL);
     glCompileShader(shader);
@@ -27,56 +31,57 @@ static GLuint CreateShader(GLenum shader_type, const char* shader_program) {
     return shader;
 }
 
-static const char* kVertexShaderProgram =
-    "#version 330 core\n"
-    "layout (location = 0) in vec3 position;\n"
-    "void main() {\n"
-    "    gl_Position = vec4(position, 1);\n"
-    "}\n";
-static inline GLuint CreateVertexShader() {
-    return CreateShader(GL_VERTEX_SHADER, kVertexShaderProgram);
+static inline GLuint create_vertex_shader(const std::string& program) {
+    return create_shader(GL_VERTEX_SHADER, program.c_str());
 }
 
-static const char* kFragmentShaderProgram =
-    "#version 330 core\n"
-    "out vec4 FragColor;\n"
-    "void main() {\n"
-    "    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-    "}\n";
-static inline GLuint CreateFragmentShader() {
-    return CreateShader(GL_FRAGMENT_SHADER, kFragmentShaderProgram);
+static inline GLuint create_fragment_shader(const std::string& program) {
+    return create_shader(GL_FRAGMENT_SHADER, program.c_str());
 }
 
-GLuint CreateShaderProgram() {
-    GLuint shader_program  = glCreateProgram();
-    GLuint vertex_shader   = CreateVertexShader();
-    GLuint fragment_shader = CreateFragmentShader();
+EResourceLoadStatus create_shader_program(
+    std::string filecontent, TShaderProgramComponent& program
+) {
+    auto pos = filecontent.find(kShaderDelimiter);
+    if (pos == std::string::npos) {
+        return EResourceLoadStatus::BROKEN_FILE_CONTENT;
+    }
 
-    glAttachShader(shader_program, vertex_shader);
-    glAttachShader(shader_program, fragment_shader);
-    glLinkProgram(shader_program);
+    program.program_id     = glCreateProgram();
+    GLuint vertex_shader   = create_vertex_shader(filecontent.substr(0, pos));
+    GLuint fragment_shader = create_fragment_shader(filecontent.substr(
+        pos + std::strlen(kShaderDelimiter), std::string::npos
+    ));
+
+    glAttachShader(program.program_id, vertex_shader);
+    glAttachShader(program.program_id, fragment_shader);
+    glLinkProgram(program.program_id);
 
     glDeleteShader(vertex_shader);
     glDeleteShader(fragment_shader);
 
     int success;
     char info_log[512];
-    glGetProgramiv(shader_program, GL_LINK_STATUS, &success);
+    glGetProgramiv(program.program_id, GL_LINK_STATUS, &success);
     if (!success) {
-        glGetProgramInfoLog(shader_program, sizeof(info_log), NULL, info_log);
+        glGetProgramInfoLog(
+            program.program_id, sizeof(info_log), NULL, info_log
+        );
         std::cerr << "Shader program link failed: " << info_log << std::endl;
         std::exit(4);
     }
-    return shader_program;
+    return EResourceLoadStatus::OK;
 }
 
-template <>
-EResourceLoadStatus
-load_resource<TShaderProgramComponent, EResourceFormat::TEXT>(
+EResourceLoadStatus load_glsl_shader_resource(
     std::istream& in, TShaderProgramComponent& program
 ) {
-    program.program_id = CreateShaderProgram();
-    return EResourceLoadStatus::OK;
+    std::string filecontent{
+        std::istreambuf_iterator<std::string::value_type>(in),
+        std::istreambuf_iterator<std::string::value_type>()
+    };
+
+    return create_shader_program(filecontent, program);
 }
 
 }  // namespace NArtEngine

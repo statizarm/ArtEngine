@@ -20,10 +20,13 @@ enum EResourceLoadStatus {
 enum EResourceFormat {
     UNKNOWN,
     TEXT,
+    GLSL,
 };
 
 template <typename TResource, EResourceFormat Fromat>
-EResourceLoadStatus load_resource(std::istream&, TResource&);
+EResourceLoadStatus load_resource(std::istream&, TResource&) {
+    return UNSUPPORTED_FORMAT;
+}
 
 class TResourceManager {
   public:
@@ -52,6 +55,10 @@ class TResourceManager {
         switch (format) {
             case EResourceFormat::TEXT:
                 return load_resource<TResource, EResourceFormat::TEXT>(
+                    input_file, resource
+                );
+            case EResourceFormat::GLSL:
+                return load_resource<TResource, EResourceFormat::GLSL>(
                     input_file, resource
                 );
             default:
