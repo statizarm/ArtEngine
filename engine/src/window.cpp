@@ -172,11 +172,11 @@ void TWindow::swap_buffers() {
     return impl_->swap_buffers();
 }
 
-void TWindow::grab_cursor() {
+void TWindow::grab_cursor() const {
     impl_->grab_cursor();
 }
 
-void TWindow::ungrab_cursor() {
+void TWindow::ungrab_cursor() const {
     impl_->ungrab_cursor();
 }
 

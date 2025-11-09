@@ -13,6 +13,7 @@
 #include "input_engine.hpp"
 #include "input_event_system.hpp"
 #include "lifetime_system.hpp"
+#include "movement_system.hpp"
 #include "rendering_system.hpp"
 #include "resource_manager.hpp"
 #include "resource_manager_system.hpp"
@@ -30,6 +31,7 @@ class TGameEngineImpl {
 
     TECSEngine &get_ecs_engine();
     TResourceManager &get_resource_manager();
+    const TWindow &get_window();
 
   private:
     TGameEngineConfig config_;
@@ -63,6 +65,7 @@ void TGameEngineImpl::init(const TGameEngineConfig &config) {
     ecs_engine_.add_system(std::make_unique<TResourceManagerSystem>());
     ecs_engine_.add_system(std::make_unique<TRemoveHandledEventSystem>());
     ecs_engine_.add_system(std::make_unique<TLifetimeSystem>());
+    ecs_engine_.add_system(std::make_unique<TMovementSystem>());
 }
 
 void TGameEngineImpl::deinit() {
@@ -110,6 +113,10 @@ TResourceManager &TGameEngineImpl::get_resource_manager() {
     return resource_manager_;
 }
 
+const TWindow &TGameEngineImpl::get_window() {
+    return *window_;
+}
+
 TGameEngine::TGameEngine() {
 }
 
@@ -147,6 +154,11 @@ TECSEngine &TGameEngine::get_ecs_engine() {
 TResourceManager &TGameEngine::get_resource_manager() {
     assert(impl_);
     return impl_->get_resource_manager();
+}
+
+const TWindow &TGameEngine::get_window() {
+    assert(impl_);
+    return impl_->get_window();
 }
 
 };  // namespace NArtEngine

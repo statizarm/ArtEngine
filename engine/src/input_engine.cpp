@@ -3,6 +3,8 @@
 #include <GLFW/glfw3.h>
 
 #include <cassert>
+#include <iostream>
+#include <ostream>
 
 #include "event_component.hpp"
 #include "input_event.hpp"
@@ -140,6 +142,8 @@ EKeyAction TranslateGLFWKeyAction(int action) {
             return EKeyAction::PRESSED;
         case GLFW_RELEASE:
             return EKeyAction::RELEASED;
+        case GLFW_REPEAT:
+            return EKeyAction::HOLDED;
         default:
             return EKeyAction::UNKNOWN;
     }
@@ -174,6 +178,8 @@ void TInputEngine::TImpl::cursor_position_callback(double xpos, double ypos) {
         .curr_xpos = xpos,
         .curr_ypos = ypos,
     };
+    prev_cursor_xpos_ = xpos;
+    prev_cursor_ypos_ = ypos;
     register_event(key_event);
 }
 

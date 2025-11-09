@@ -36,6 +36,10 @@ bool TECSEngine::has_entity_component(
 void* TECSEngine::add_entity_component(
     TEntityID entity_id, TComponentTypeID component_type_id, TComponentMeta meta
 ) {
+    if (has_entity_component(entity_id, component_type_id)) {
+        return get_entity_component(entity_id, component_type_id);
+    }
+
     if (!components_.contains(component_type_id)) {
         auto& storage = components_[component_type_id];
 
@@ -73,15 +77,20 @@ void TECSEngine::remove_entity(TEntityID entity_id) {
     add_entity_component<TRemovedEntityComponent>(entity_id);
 }
 
+TEntity TECSEngine::get_entity(TEntityID entity_id) {
+    return TEntity(entity_id, this);
+}
+
 void TECSEngine::add_system(std::unique_ptr<TSystem> system) {
     systems_.emplace_back(std::move(system));
 }
 
 void TECSEngine::update(const TRenderingContext& context) {
     TEntitiesView entities;
+    entities.reserve(kMaxEntities);
     for (int i = 0; i < components_mask_.size(); ++i) {
         if (!has_entity_component<TRemovedEntityComponent>(i)) {
-            entities.emplace_back(TEntity(i, this));
+            entities.emplace_back(get_entity(i));
         }
     }
     for (auto& system : systems_) {

@@ -38,6 +38,8 @@ set(
     ${INCLUDES_DIR}/lifetime_component.hpp
     ${INCLUDES_DIR}/lifetime_system.hpp
     ${INCLUDES_DIR}/mesh.hpp
+    ${INCLUDES_DIR}/movement_component.hpp
+    ${INCLUDES_DIR}/movement_system.hpp
     ${INCLUDES_DIR}/rendering_context.hpp
     ${INCLUDES_DIR}/rendering_system.hpp
     ${INCLUDES_DIR}/resource_managed_component.hpp
@@ -58,6 +60,7 @@ set(
     src/input_event_system.cpp
     src/lifetime_system.cpp
     src/mesh.cpp
+    src/movement_system.cpp
     src/rendering_system.cpp
     src/resource_manager.cpp
     src/resource_manager_system.cpp

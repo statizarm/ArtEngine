@@ -13,6 +13,7 @@
 namespace NArtEngine {
 
 class TSystem;
+class TEntity;
 
 class TECSEngine {
   public:
@@ -39,6 +40,7 @@ class TECSEngine {
 
     TEntityID add_entity();
     void remove_entity(TEntityID);
+    TEntity get_entity(TEntityID);
 
     void add_system(std::unique_ptr<TSystem> system);
 

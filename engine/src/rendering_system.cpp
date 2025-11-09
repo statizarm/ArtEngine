@@ -10,10 +10,28 @@
 
 #include "camera_component.hpp"
 #include "mesh.hpp"
+#include "parent_component.hpp"
 #include "position_component.hpp"
 #include "shader.hpp"
 
 namespace NArtEngine {
+
+static glm::mat4 get_entity_model(TEntity entity) {
+    glm::mat4 model = glm::identity<glm::mat4>();
+    if (entity.has_component<TPositionComponent>()) {
+        const auto& position = entity.get_component<TPositionComponent>();
+
+        model = glm::translate(
+            glm::mat4_cast(position.rotation), position.position
+        );
+    }
+    if (entity.has_component<TParentComponent>()) {
+        model =
+            get_entity_model(entity.get_component<TParentComponent>().parent) *
+            model;
+    }
+    return model;
+}
 
 static void draw_entity(
     const TEntity& entity, const TPositionComponent* camera_position,
@@ -29,14 +47,7 @@ static void draw_entity(
             -camera_position->position
         );
     }
-    glm::mat4 model = glm::identity<glm::mat4>();
-    if (entity.has_component<TPositionComponent>()) {
-        const auto& position = entity.get_component<TPositionComponent>();
-
-        model = glm::translate(
-            glm::mat4_cast(position.rotation), position.position
-        );
-    }
+    auto model = get_entity_model(entity);
 
     auto mvp = projection * view * model;
 

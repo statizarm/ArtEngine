@@ -10,8 +10,7 @@ class TEntity {
   public:
     friend TECSEngine;
 
-  public:
-    TEntity() = delete;
+    TEntity() = default;
 
   public:
     template <CComponent TComponent>

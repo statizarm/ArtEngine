@@ -33,8 +33,8 @@ class TWindow {
     void bind_current_context();
     void swap_buffers();
 
-    void grab_cursor();
-    void ungrab_cursor();
+    void grab_cursor() const;
+    void ungrab_cursor() const;
 
     void register_keyboard_key_callback(TKeyboardKeyCallback callback);
     void register_mouse_key_callback(TMouseKeyCallback callback);

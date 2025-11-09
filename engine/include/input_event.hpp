@@ -71,6 +71,7 @@ enum class EKeyAction : size_t {
     PRESSED,
     RELEASED,
     MOVED,
+    HOLDED,
     KEY_ACTION_COUNT,
 };
 
