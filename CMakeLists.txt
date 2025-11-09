@@ -9,6 +9,7 @@ add_subdirectory(engine)
 add_subdirectory(examples)
 add_subdirectory(utils)
 
+target_link_libraries(rotating-camera engine)
 target_link_libraries(resource-manager-autoreload engine)
 target_link_libraries(simple-ecs engine)
 target_link_libraries(simple-input engine)
