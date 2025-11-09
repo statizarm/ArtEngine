@@ -11,5 +11,6 @@ add_subdirectory(utils)
 
 target_link_libraries(resource-manager-autoreload engine)
 target_link_libraries(simple-ecs engine)
+target_link_libraries(simple-input engine)
 target_link_libraries(simple-resource-manager engine)
 target_link_libraries(window engine)

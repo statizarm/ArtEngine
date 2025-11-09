@@ -10,6 +10,8 @@
 
 namespace NArtEngine {
 
+static constexpr int64_t kEventFramesLifetime = 5;
+
 namespace NPrivate {
 
 static void key_callback(void*, int key, int scancode, int action, int mods);
@@ -77,7 +79,7 @@ void TInputEngine::TImpl::register_event(const TEvent& event) {
     ecs_engine_->add_entity_component<TEventComponent>(entity_id);
     auto& lifetime =
         ecs_engine_->add_entity_component<TLifetimeComponent>(entity_id);
-    lifetime.frames = 1;
+    lifetime.frames = kEventFramesLifetime;
     lifetime.time   = 0.0;
 }
 
