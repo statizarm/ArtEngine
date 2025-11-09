@@ -32,6 +32,11 @@ set(
     ${INCLUDES_DIR}/game.hpp
     ${INCLUDES_DIR}/game_engine.hpp
     ${INCLUDES_DIR}/game_engine_config.hpp
+    ${INCLUDES_DIR}/input_engine.hpp
+    ${INCLUDES_DIR}/input_event.hpp
+    ${INCLUDES_DIR}/input_event_system.hpp
+    ${INCLUDES_DIR}/lifetime_component.hpp
+    ${INCLUDES_DIR}/lifetime_system.hpp
     ${INCLUDES_DIR}/mesh.hpp
     ${INCLUDES_DIR}/rendering_context.hpp
     ${INCLUDES_DIR}/rendering_system.hpp
@@ -49,6 +54,9 @@ set(
     src/entity.cpp
     src/game.cpp
     src/game_engine.cpp
+    src/input_engine.cpp
+    src/input_event_system.cpp
+    src/lifetime_system.cpp
     src/mesh.cpp
     src/rendering_system.cpp
     src/resource_manager.cpp

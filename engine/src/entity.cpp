@@ -18,4 +18,8 @@ void TEntity::remove_component(TComponentTypeID component_type_id) const {
     engine_->remove_entity_component(entity_id_, component_type_id);
 }
 
+void TEntity::remove() const {
+    engine_->remove_entity(entity_id_);
+}
+
 }  // namespace NArtEngine

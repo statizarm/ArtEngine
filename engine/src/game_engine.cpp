@@ -10,6 +10,9 @@
 #include <iostream>
 
 #include "ecs_engine.hpp"
+#include "input_engine.hpp"
+#include "input_event_system.hpp"
+#include "lifetime_system.hpp"
 #include "rendering_system.hpp"
 #include "resource_manager.hpp"
 #include "resource_manager_system.hpp"
@@ -28,14 +31,11 @@ class TGameEngineImpl {
     TECSEngine &get_ecs_engine();
     TResourceManager &get_resource_manager();
 
-  public:
-    // NOTE: Various callbacks
-    void frameBufferSizeCallback(GLFWwindow *window, int width, int height);
-
   private:
     TGameEngineConfig config_;
     TECSEngine ecs_engine_;
     TResourceManager resource_manager_;
+    TInputEngine input_engine_;
     std::unique_ptr<TWindow> window_;
 };
 
@@ -58,12 +58,16 @@ void TGameEngineImpl::init(const TGameEngineConfig &config) {
     config_ = config;
 
     resource_manager_ = TResourceManager(config.resource_manager_config);
+    input_engine_.init(window_.get(), &ecs_engine_);
     ecs_engine_.add_system(std::make_unique<TRenderingSystem>());
     ecs_engine_.add_system(std::make_unique<TResourceManagerSystem>());
+    ecs_engine_.add_system(std::make_unique<TRemoveHandledEventSystem>());
+    ecs_engine_.add_system(std::make_unique<TLifetimeSystem>());
 }
 
 void TGameEngineImpl::deinit() {
     window_.reset();
+    input_engine_.deinit();
     glfwTerminate();
 }
 

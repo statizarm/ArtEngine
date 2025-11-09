@@ -35,6 +35,8 @@ class TEntity {
     bool has_component(TComponentTypeID) const;
     void remove_component(TComponentTypeID) const;
 
+    void remove() const;
+
   private:
     TEntity(TEntityID entity_id, TECSEngine* engine);
 
