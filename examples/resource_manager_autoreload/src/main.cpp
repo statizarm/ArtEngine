@@ -11,19 +11,15 @@
 class TGame : public NArtEngine::IGame {
   public:
     TGame(NArtEngine::TGameEngine* game_engine)
-        : game_engine_(game_engine), resource_manager_() {
-        NArtEngine::TResourceManagerConfig resource_manager_config{
-            .resources_directory =
-                std::filesystem::path(__FILE__).parent_path().parent_path()
-        };
-        resource_manager_ =
-            NArtEngine::TResourceManager(resource_manager_config);
+        : game_engine_(game_engine) {
     }
 
     void init() override {
-        auto& ecs_engine = game_engine_->get_ecs_engine();
+        auto& ecs_engine       = game_engine_->get_ecs_engine();
+        auto& resource_manager = game_engine_->get_resource_manager();
 
         entity_ = ecs_engine.add_entity();
+
         auto& shader_component =
             ecs_engine
                 .add_entity_component<NArtEngine::TShaderProgramComponent>(
@@ -39,23 +35,20 @@ class TGame : public NArtEngine::IGame {
                     entity_
                 );
 
-        resource_managed_component.resource_manager = &resource_manager_;
+        resource_managed_component.resource_manager = &resource_manager;
 
-        auto res = resource_manager_.load("resources/mesh.txt", mesh_component);
+        auto res = resource_manager.load("resources/mesh.txt", mesh_component);
         if (res.status == NArtEngine::EResourceLoadStatus::OK) {
             resource_managed_component
                 .component_resources[mesh_component.get_component_type_id()] =
                 res.resource_id;
         }
-        res = resource_manager_.load("resources/shader.glsl", shader_component);
+        res = resource_manager.load("resources/shader.glsl", shader_component);
         if (res.status == NArtEngine::EResourceLoadStatus::OK) {
             resource_managed_component
                 .component_resources[shader_component.get_component_type_id()] =
                 res.resource_id;
         }
-        ecs_engine.add_system(
-            std::make_unique<NArtEngine::TResourceManagerSystem>()
-        );
     }
 
     void update(const NArtEngine::TRenderingContext& context) override {
@@ -81,14 +74,20 @@ class TGame : public NArtEngine::IGame {
   private:
     NArtEngine::TGameEngine* game_engine_;
     NArtEngine::TEntityID entity_;
-    NArtEngine::TResourceManager resource_manager_;
 };
 
 int main() {
     NArtEngine::TGameEngine engine;
     TGame game(&engine);
 
-    engine.init();
+    engine.init(NArtEngine::TGameEngineConfig{
+        .resource_manager_config =
+            NArtEngine::TResourceManagerConfig{
+                .resources_directory =
+                    std::filesystem::path(__FILE__).parent_path().parent_path(),
+            },
+    });
+
     engine.run(&game);
     engine.deinit();
 

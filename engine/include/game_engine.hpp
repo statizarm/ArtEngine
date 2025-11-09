@@ -5,6 +5,7 @@
 #include "ecs_engine.hpp"
 #include "game.hpp"
 #include "game_engine_config.hpp"
+#include "resource_manager.hpp"
 
 namespace NArtEngine {
 
@@ -21,6 +22,7 @@ class TGameEngine {
     void run(IGame* game);
 
     TECSEngine& get_ecs_engine();
+    TResourceManager& get_resource_manager();
 
   private:
     std::unique_ptr<TGameEngineImpl> impl_;

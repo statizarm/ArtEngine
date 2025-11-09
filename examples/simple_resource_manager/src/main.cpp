@@ -7,51 +7,52 @@
 class TGame : public NArtEngine::IGame {
   public:
     TGame(NArtEngine::TGameEngine* game_engine)
-        : game_engine_(game_engine), resource_manager_() {
-        NArtEngine::TResourceManagerConfig resource_manager_config{
-            .resources_directory =
-                std::filesystem::path(__FILE__).parent_path().parent_path()
-        };
-        resource_manager_ =
-            NArtEngine::TResourceManager(resource_manager_config);
+        : game_engine_(game_engine) {
     }
 
     void init() override {
-        auto& ecs_engine = game_engine_->get_ecs_engine();
-        triangle_entity_ = ecs_engine.add_entity();
+        auto& ecs_engine       = game_engine_->get_ecs_engine();
+        auto& resource_manager = game_engine_->get_resource_manager();
+        entity_                = ecs_engine.add_entity();
         auto& shader_component =
             ecs_engine
                 .add_entity_component<NArtEngine::TShaderProgramComponent>(
-                    triangle_entity_
+                    entity_
                 );
         auto& mesh_component =
-            ecs_engine.add_entity_component<NArtEngine::TMeshComponent>(
-                triangle_entity_
+            ecs_engine.add_entity_component<NArtEngine::TMeshComponent>(entity_
             );
 
-        auto res = resource_manager_.load(
+        auto res = resource_manager.load(
             "resources/triangle_mesh.txt", mesh_component
         );
-        res = resource_manager_.load(
+        res = resource_manager.load(
             "resources/triangle_shader.glsl", shader_component
         );
     }
+
     void update(const NArtEngine::TRenderingContext& context) override {
     }
+
     void deinit() override {
     }
 
   private:
     NArtEngine::TGameEngine* game_engine_;
-    NArtEngine::TEntityID triangle_entity_;
-    NArtEngine::TResourceManager resource_manager_;
+    NArtEngine::TEntityID entity_;
 };
 
 int main() {
     NArtEngine::TGameEngine engine;
     TGame game(&engine);
 
-    engine.init();
+    engine.init(NArtEngine::TGameEngineConfig{
+        .resource_manager_config =
+            NArtEngine::TResourceManagerConfig{
+                .resources_directory =
+                    std::filesystem::path(__FILE__).parent_path().parent_path(),
+            },
+    });
     engine.run(&game);
     engine.deinit();
 

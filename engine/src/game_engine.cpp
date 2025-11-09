@@ -11,6 +11,8 @@
 
 #include "ecs_engine.hpp"
 #include "rendering_system.hpp"
+#include "resource_manager.hpp"
+#include "resource_manager_system.hpp"
 #include "window.hpp"
 
 namespace NArtEngine {
@@ -24,6 +26,7 @@ class TGameEngineImpl {
     void run(IGame *game);
 
     TECSEngine &get_ecs_engine();
+    TResourceManager &get_resource_manager();
 
   public:
     // NOTE: Various callbacks
@@ -32,6 +35,7 @@ class TGameEngineImpl {
   private:
     TGameEngineConfig config_;
     TECSEngine ecs_engine_;
+    TResourceManager resource_manager_;
     std::unique_ptr<TWindow> window_;
 };
 
@@ -53,7 +57,9 @@ void TGameEngineImpl::init(const TGameEngineConfig &config) {
     }
     config_ = config;
 
-    ecs_engine_.add_system(std::make_unique<NArtEngine::TRenderingSystem>());
+    resource_manager_ = TResourceManager(config.resource_manager_config);
+    ecs_engine_.add_system(std::make_unique<TRenderingSystem>());
+    ecs_engine_.add_system(std::make_unique<TResourceManagerSystem>());
 }
 
 void TGameEngineImpl::deinit() {
@@ -96,6 +102,10 @@ TECSEngine &TGameEngineImpl::get_ecs_engine() {
     return ecs_engine_;
 }
 
+TResourceManager &TGameEngineImpl::get_resource_manager() {
+    return resource_manager_;
+}
+
 TGameEngine::TGameEngine() {
 }
 
@@ -128,6 +138,11 @@ void TGameEngine::run(IGame *game) {
 TECSEngine &TGameEngine::get_ecs_engine() {
     assert(impl_);
     return impl_->get_ecs_engine();
+}
+
+TResourceManager &TGameEngine::get_resource_manager() {
+    assert(impl_);
+    return impl_->get_resource_manager();
 }
 
 };  // namespace NArtEngine
