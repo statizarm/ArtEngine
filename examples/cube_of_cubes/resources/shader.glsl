@@ -1,8 +1,9 @@
 #version 330 core
 layout (location = 0) in vec3 position;
-uniform mat4 mvp;
+layout (location = 1) in mat4 instanceMatrix;
+
 void main() {
-    gl_Position = mvp * vec4(position, 1);
+    gl_Position = instanceMatrix * vec4(position, 1);
 }
 
 // SHADER DELIMITER

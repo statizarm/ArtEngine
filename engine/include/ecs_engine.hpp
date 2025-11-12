@@ -17,7 +17,7 @@ class TEntity;
 
 class TECSEngine {
   public:
-    static constexpr size_t kMaxEntities   = 1 << 16;
+    static constexpr size_t kMaxEntities   = 1 << 20;
     static constexpr size_t kMaxComponents = 256;
 
   public:
@@ -71,6 +71,7 @@ class TECSEngine {
     std::vector<std::bitset<kMaxComponents>> components_mask_;
     std::unordered_map<TComponentTypeID, TComponentStorage> components_;
     std::vector<std::unique_ptr<TSystem>> systems_;
+    TEntityID first_free_entity_ = 0;
 };
 
 }  // namespace NArtEngine

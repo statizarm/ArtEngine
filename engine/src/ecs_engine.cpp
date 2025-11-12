@@ -11,6 +11,7 @@ TECSEngine::TECSEngine()
     for (size_t i = 0; i < components_mask_.size(); ++i) {
         add_entity_component<TRemovedEntityComponent>(TEntityID{i});
     }
+    first_free_entity_ = 0;
 }
 
 TECSEngine::~TECSEngine() {
@@ -63,18 +64,25 @@ void TECSEngine::remove_entity_component(
 }
 
 TEntityID TECSEngine::add_entity() {
-    for (size_t i = 0; i < components_mask_.size(); ++i) {
+    auto new_entity_id = first_free_entity_;
+    remove_entity_component<TRemovedEntityComponent>(TEntityID{new_entity_id});
+    for (size_t i = first_free_entity_ + 1; i < components_mask_.size(); ++i) {
+        first_free_entity_ = i;
         if (has_entity_component<TRemovedEntityComponent>(TEntityID{i})) {
-            remove_entity_component<TRemovedEntityComponent>(TEntityID{i});
-            return i;
+            break;
         }
     }
-    return -1;
+
+    return new_entity_id;
 }
 
 void TECSEngine::remove_entity(TEntityID entity_id) {
     components_mask_[entity_id].reset();
     add_entity_component<TRemovedEntityComponent>(entity_id);
+
+    if (entity_id > first_free_entity_) {
+        first_free_entity_ = entity_id;
+    }
 }
 
 TEntity TECSEngine::get_entity(TEntityID entity_id) {

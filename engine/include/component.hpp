@@ -14,8 +14,8 @@ class TComponent {
     using TDerived = T;
 
   public:
-    static TComponentTypeID get_component_type_id() {
-        return NArtEngineUtils::get_identifier<"TComponent">(typeid(T).name());
+    inline static TComponentTypeID get_component_type_id() {
+        return NArtEngineUtils::get_identifier<T, "TComponent">();
     }
 };
 

@@ -22,11 +22,15 @@ class TIdentifierGenerator {
 };
 
 template <string_literal s>
-inline TIdentifier get_identifier(const std::string& id) {
-    static TIdentifierGenerator generator;
-    return generator.get_identifier(id);
+inline TIdentifier get_identifier() {
+    static size_t id = 0;
+    return TIdentifier{.monotonic_id = id++};
 }
 
-TIdentifier get_identifier(const std::string& id);
+template <typename T, string_literal s>
+TIdentifier get_identifier() {
+    static TIdentifier real_id = get_identifier<s>();
+    return real_id;
+}
 
 }  // namespace NArtEngineUtils

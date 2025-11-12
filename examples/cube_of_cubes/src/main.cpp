@@ -213,9 +213,9 @@ class TGame : public NArtEngine::IGame {
         const NArtEngine::TShaderProgramComponent& shader,
         const NArtEngine::TMeshComponent& mesh, int distance
     ) {
-        static constexpr int kRowCubeCount = 2;
+        static constexpr int kRowCubeCount = 3;
         auto& ecs_engine                   = game_engine_->get_ecs_engine();
-        if (distance <= 2) {
+        if (distance <= 1) {
             auto cube = ecs_engine.get_entity(ecs_engine.add_entity());
             cube.add_component<NArtEngine::TMeshComponent>()          = mesh;
             cube.add_component<NArtEngine::TShaderProgramComponent>() = shader;
@@ -224,7 +224,8 @@ class TGame : public NArtEngine::IGame {
         }
 
         auto cube_set_id = ecs_engine.add_entity();
-        auto cube_set    = ecs_engine.get_entity(cube_set_id);
+        std::cout << cube_set_id << std::endl;
+        auto cube_set = ecs_engine.get_entity(cube_set_id);
         for (int i = 0; i < kRowCubeCount; ++i) {
             for (int j = 0; j < kRowCubeCount; ++j) {
                 for (int k = 0; k < kRowCubeCount; ++k) {

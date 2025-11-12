@@ -92,6 +92,7 @@ void TGameEngineImpl::run(IGame *game) {
         if (1.0 / context.dt > config_.max_fps) {
             continue;
         }
+        start = glfwGetTime();
 
         ecs_engine_.update(context);
 
@@ -99,8 +100,6 @@ void TGameEngineImpl::run(IGame *game) {
         // NOTE: update game
 
         game->update(context);
-
-        start = glfwGetTime();
     }
     game->deinit();
 }
