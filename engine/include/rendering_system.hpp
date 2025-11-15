@@ -7,7 +7,7 @@ namespace NArtEngine {
 
 class TRenderingSystem {
   public:
-    void run(const TRenderingContext&, const TEntitiesView&);
+    void run(const TRenderingContext&, const TEntitiesView<TEntity>&);
 };
 
 }  // namespace NArtEngine

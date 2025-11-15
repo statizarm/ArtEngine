@@ -91,15 +91,16 @@ TEntity TECSEngine::get_entity(TEntityID entity_id) {
 }
 
 void TECSEngine::update(const TRenderingContext& context) {
-    TEntitiesView entities;
+    TEntityContainer entities;
     entities.reserve(kMaxEntities);
     for (int i = 0; i < components_mask_.size(); ++i) {
         if (!has_entity_component<TRemovedEntityComponent>(i)) {
             entities.emplace_back(get_entity(i));
         }
     }
+    TEntitiesView<TEntity> view{entities};
     for (auto& system : systems_) {
-        system.run(context, entities);
+        system.run(context, view);
     }
 }
 

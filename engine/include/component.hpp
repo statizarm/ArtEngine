@@ -36,7 +36,7 @@ struct TComponentMeta {
         TComponentMeta res;
         res.type_id        = T::get_type_id();
         res.component_size = sizeof(T);
-        res.constructor    = [](void* memory) { new (memory) T; };
+        res.constructor    = [](void* memory) { new (memory) T(); };
         res.destructor = [](void* memory) { static_cast<T*>(memory)->~T(); };
         return res;
     }

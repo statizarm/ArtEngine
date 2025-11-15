@@ -10,7 +10,7 @@ class TPrintInputEventSystem : public NArtEngine::TInputEventSystem {
   public:
     void run(
         const NArtEngine::TRenderingContext& context,
-        const NArtEngine::TEntitiesView& entities
+        const NArtEngine::TEntitiesView<NArtEngine::TEntity>& entities
     ) {
         for (const auto& entity : entities) {
             if (!entity.has<NArtEngine::TEvent>()) {

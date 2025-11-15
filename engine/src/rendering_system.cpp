@@ -79,7 +79,7 @@ static bool has_instance_matrix(const TShaderProgram* shader) {
 }
 
 static void draw_entities(
-    const TEntitiesView& entities, const TPosition* camera_position,
+    const TEntitiesView<TEntity>& entities, const TPosition* camera_position,
     glm::mat4 projection
 ) {
     auto view = get_view(camera_position);
@@ -145,7 +145,7 @@ static void draw_entities(
 }
 
 void TRenderingSystem::run(
-    const TRenderingContext& context, const TEntitiesView& entities
+    const TRenderingContext& context, const TEntitiesView<TEntity>& entities
 ) {
     auto [width, height] = context.window->window_size();
     glViewport(0, 0, width, height);

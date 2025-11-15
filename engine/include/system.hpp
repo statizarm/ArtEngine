@@ -12,17 +12,11 @@ enum ESystemMode {
 
 template <typename TSystem>
 concept TRunableSystem = requires(std::decay_t<TSystem> a) {
-    a.run(TRenderingContext{}, TEntitiesView{});
+    a.run(TRenderingContext{}, TEntitiesView<TEntity>{});
 };
 
 template <typename TSystem>
-concept TSingleRunableSystem = requires(std::decay_t<TSystem> a) {
-    a.run(TRenderingContext{}, TEntitiesView{});
-};
-
-template <typename TSystem>
-concept CSystem = TRunableSystem<std::decay_t<TSystem>> ||
-                  TSingleRunableSystem<std::decay_t<TSystem>>;
+concept CSystem = TRunableSystem<std::decay_t<TSystem>>;
 
 template <typename T, CSystem TSystem>
 struct TSystemTraits {
@@ -43,11 +37,14 @@ class TTypeErasedSystem {
     static TTypeErasedSystem create(TSystem&&);
 
   public:
-    void run(const TRenderingContext& context, TEntitiesView& view);
+    void run(
+        const TRenderingContext& context, const TEntitiesView<TEntity>& view
+    );
 
   private:
     using TDeleter = void (*)(void*);
-    using TCall    = void (*)(void*, const TRenderingContext&, TEntitiesView&);
+    using TCall =
+        void (*)(void*, const TRenderingContext&, const TEntitiesView<TEntity>&);
 
   private:
     TTypeErasedSystem() = default;

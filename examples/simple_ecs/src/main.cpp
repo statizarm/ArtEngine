@@ -8,7 +8,7 @@ class TPrintFrameTimeSystem {
   public:
     void run(
         const NArtEngine::TRenderingContext& context,
-        const NArtEngine::TEntitiesView& entities
+        const NArtEngine::TEntitiesView<NArtEngine::TEntity>& entities
     ) {
         std::cout << "frame_time: " << context.dt << std::endl;
         std::cout << "fps: " << 1 / context.dt << std::endl;

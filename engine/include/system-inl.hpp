@@ -11,7 +11,7 @@ TTypeErasedSystem TTypeErasedSystem::create(TSystem&& system) {
     res.deleter_ = [](void* memory) { delete static_cast<TSystem*>(memory); };
     res.call_    = [](void* memory,
                    const TRenderingContext& context,
-                   TEntitiesView& entities) {
+                   const TEntitiesView<TEntity>& entities) {
         static_cast<TSystem*>(memory)->run(context, entities);
     };
     return res;

@@ -13,7 +13,9 @@ class TInputEventSystem {
 
 class TRemoveHandledEventSystem {
   public:
-    void run(const TRenderingContext& context, const TEntitiesView& entities);
+    void run(
+        const TRenderingContext& context, const TEntitiesView<TEntity>& entities
+    );
 };
 
 }  // namespace NArtEngine

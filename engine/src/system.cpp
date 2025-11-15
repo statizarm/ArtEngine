@@ -23,7 +23,7 @@ TTypeErasedSystem& TTypeErasedSystem::operator=(TTypeErasedSystem&& other) {
 }
 
 void TTypeErasedSystem::run(
-    const TRenderingContext& context, TEntitiesView& entities
+    const TRenderingContext& context, const TEntitiesView<TEntity>& entities
 ) {
     call_(memory_, context, entities);
 }

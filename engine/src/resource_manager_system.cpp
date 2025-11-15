@@ -5,7 +5,7 @@
 namespace NArtEngine {
 
 void TResourceManagerSystem::run(
-    const TRenderingContext& context, const TEntitiesView& entities
+    const TRenderingContext& context, const TEntitiesView<TEntity>& entities
 ) {
     for (const auto& entity : entities) {
         if (entity.has<TResourceManaged>()) {
