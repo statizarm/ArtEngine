@@ -13,20 +13,20 @@
 #include "resource_manager.hpp"
 #include "shader.hpp"
 
-class TPrintFrameTimeSystem : public NArtEngine::TSystem {
-  protected:
-    void do_run(
+class TPrintFrameTimeSystem {
+  public:
+    void run(
         const NArtEngine::TRenderingContext& context,
         const NArtEngine::TEntitiesView& entities
-    ) override {
+    ) {
         std::cout << "frame_time: " << context.dt << std::endl;
         std::cout << "fps: " << 1 / context.dt << std::endl;
     }
 };
 
 class TControlCameraSystem : public NArtEngine::TInputEventSystem {
-  protected:
-    void do_run(
+  public:
+    void run(
         const NArtEngine::TRenderingContext& context,
         const NArtEngine::TEntitiesView& entities
     ) {
@@ -131,9 +131,9 @@ class TControlCameraSystem : public NArtEngine::TInputEventSystem {
     }
 };
 
-class TRotationSystem : public NArtEngine::TSystem {
-  protected:
-    void do_run(
+class TRotationSystem {
+  public:
+    void run(
         const NArtEngine::TRenderingContext& context,
         const NArtEngine::TEntitiesView& entities
     ) {
@@ -181,9 +181,9 @@ class TGame : public NArtEngine::IGame {
         camera_position.position.z = 5.0f;
 
         create_cube_of_cubes(shader, mesh, 8);
-        ecs_engine.add_system(std::make_unique<TControlCameraSystem>());
-        ecs_engine.add_system(std::make_unique<TRotationSystem>());
-        ecs_engine.add_system(std::make_unique<TPrintFrameTimeSystem>());
+        ecs_engine.add_system(TControlCameraSystem());
+        ecs_engine.add_system(TRotationSystem());
+        ecs_engine.add_system(TPrintFrameTimeSystem());
     }
 
     void update(const NArtEngine::TRenderingContext& context) override {

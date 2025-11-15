@@ -1,6 +1,7 @@
 #include "ecs_engine.hpp"
 
-#include "system.hpp"
+#include "entities_view.hpp"
+#include "entity.hpp"
 
 namespace NArtEngine {
 
@@ -35,24 +36,24 @@ bool TECSEngine::has_entity_component(
 }
 
 void* TECSEngine::add_entity_component(
-    TEntityID entity_id, TComponentTypeID component_type_id, TComponentMeta meta
+    TEntityID entity_id, TComponentMeta meta
 ) {
-    if (has_entity_component(entity_id, component_type_id)) {
-        return get_entity_component(entity_id, component_type_id);
+    if (has_entity_component(entity_id, meta.type_id)) {
+        return get_entity_component(entity_id, meta.type_id);
     }
 
-    if (!components_.contains(component_type_id)) {
-        auto& storage = components_[component_type_id];
+    if (!components_.contains(meta.type_id)) {
+        auto& storage = components_[meta.type_id];
 
         storage.meta   = meta;
         storage.memory = std::unique_ptr<uint8_t>(
             new uint8_t[meta.component_size * kMaxEntities]
         );
     }
-    components_mask_[entity_id].set(static_cast<size_t>(component_type_id));
-    void* component_memory = get_entity_component(entity_id, component_type_id);
+    components_mask_[entity_id].set(static_cast<size_t>(meta.type_id));
+    void* component_memory = get_entity_component(entity_id, meta.type_id);
     meta.constructor(component_memory);
-    return get_entity_component(entity_id, component_type_id);
+    return get_entity_component(entity_id, meta.type_id);
 }
 
 void TECSEngine::remove_entity_component(
@@ -89,10 +90,6 @@ TEntity TECSEngine::get_entity(TEntityID entity_id) {
     return TEntity(entity_id, this);
 }
 
-void TECSEngine::add_system(std::unique_ptr<TSystem> system) {
-    systems_.emplace_back(std::move(system));
-}
-
 void TECSEngine::update(const TRenderingContext& context) {
     TEntitiesView entities;
     entities.reserve(kMaxEntities);
@@ -102,7 +99,7 @@ void TECSEngine::update(const TRenderingContext& context) {
         }
     }
     for (auto& system : systems_) {
-        system->run(context, entities);
+        system.run(context, entities);
     }
 }
 

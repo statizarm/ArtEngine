@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ecs_engine.hpp"
+#include "system.hpp"
 
 namespace NArtEngine {
 
@@ -19,9 +20,9 @@ inline bool TECSEngine::has_entity_component(TEntityID entity_id) {
 template <CComponent TComponent>
 TComponent& TECSEngine::add_entity_component(TEntityID entity_id) {
     auto component_type_id = TComponent::get_type_id();
-    auto component_meta    = get_component_meta<TComponent>();
+    auto component_meta    = TComponentMeta::get<TComponent>();
     return *static_cast<TComponent*>(
-        add_entity_component(entity_id, component_type_id, component_meta)
+        add_entity_component(entity_id, component_meta)
     );
 }
 
@@ -30,14 +31,10 @@ inline void TECSEngine::remove_entity_component(TEntityID entity_id) {
     remove_entity_component(entity_id, TComponent::get_type_id());
 }
 
-template <CComponent TComponent>
-TECSEngine::TComponentMeta TECSEngine::get_component_meta() {
-    return TComponentMeta{
-        .component_size = sizeof(TComponent),
-        .constructor    = [](void* memory) { new (memory) TComponent(); },
-        .destructor     = [](void* memory
-                      ) { static_cast<TComponent*>(memory)->~TComponent(); },
-    };
+template <typename TSystem>
+void TECSEngine::add_system(TSystem&& system) {
+    systems_.emplace_back(TTypeErasedSystem::create(std::forward<TSystem>(system
+    )));
 }
 
 }  // namespace NArtEngine

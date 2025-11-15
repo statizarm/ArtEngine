@@ -10,33 +10,54 @@ enum ESystemMode {
     DISABLED,
 };
 
-template <typename T>
-concept CSystem =
-    requires(T a) { a.run(TRenderingContext{}, TEntitiesView{}); };
+template <typename TSystem>
+concept TRunableSystem = requires(std::decay_t<TSystem> a) {
+    a.run(TRenderingContext{}, TEntitiesView{});
+};
 
-class TSystem {
+template <typename TSystem>
+concept TSingleRunableSystem = requires(std::decay_t<TSystem> a) {
+    a.run(TRenderingContext{}, TEntitiesView{});
+};
+
+template <typename TSystem>
+concept CSystem = TRunableSystem<std::decay_t<TSystem>> ||
+                  TSingleRunableSystem<std::decay_t<TSystem>>;
+
+template <typename T, CSystem TSystem>
+struct TSystemTraits {
+    using TEntityType = T;
+};
+
+class TTypeErasedSystem {
   public:
-    virtual ~TSystem() = default;
+    TTypeErasedSystem(const TTypeErasedSystem&) = delete;
+    TTypeErasedSystem(TTypeErasedSystem&& other);
+    ~TTypeErasedSystem();
+
+    TTypeErasedSystem& operator=(const TTypeErasedSystem&) = delete;
+    TTypeErasedSystem& operator=(TTypeErasedSystem&& other);
 
   public:
-    void run(const TRenderingContext& context, TEntitiesView& view) {
-        if (mode_ == ESystemMode::DISABLED) {
-            return;
-        }
-        do_run(context, view);
-    }
+    template <CSystem TSystem>
+    static TTypeErasedSystem create(TSystem&&);
 
-    void set_mode(ESystemMode mode) {
-        mode_ = mode;
-    }
-
-  protected:
-    virtual void do_run(
-        const TRenderingContext& context, const TEntitiesView& view
-    ) = 0;
+  public:
+    void run(const TRenderingContext& context, TEntitiesView& view);
 
   private:
-    ESystemMode mode_ = ESystemMode::ENABLED;
+    using TDeleter = void (*)(void*);
+    using TCall    = void (*)(void*, const TRenderingContext&, TEntitiesView&);
+
+  private:
+    TTypeErasedSystem() = default;
+
+  private:
+    void* memory_     = nullptr;
+    TDeleter deleter_ = nullptr;
+    TCall call_       = nullptr;
 };
 
 }  // namespace NArtEngine
+
+#include "system-inl.hpp"

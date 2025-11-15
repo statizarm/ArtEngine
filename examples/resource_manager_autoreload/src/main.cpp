@@ -5,7 +5,6 @@
 #include "mesh.hpp"
 #include "resource_managed_component.hpp"
 #include "resource_manager.hpp"
-#include "resource_manager_system.hpp"
 #include "shader.hpp"
 
 class TGame : public NArtEngine::IGame {

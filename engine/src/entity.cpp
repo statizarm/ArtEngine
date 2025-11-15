@@ -1,5 +1,7 @@
 #include "entity.hpp"
 
+#include "ecs_engine.hpp"
+
 namespace NArtEngine {
 
 TEntity::TEntity(TEntityID entity_id, TECSEngine* engine)
@@ -12,6 +14,10 @@ void* TEntity::get_component(TComponentTypeID component_type_id) const {
 
 bool TEntity::has_component(TComponentTypeID component_type_id) const {
     return engine_->has_entity_component(entity_id_, component_type_id);
+}
+
+void* TEntity::add_component(TComponentMeta meta) const {
+    return engine_->add_entity_component(entity_id_, meta);
 }
 
 void TEntity::remove_component(TComponentTypeID component_type_id) const {

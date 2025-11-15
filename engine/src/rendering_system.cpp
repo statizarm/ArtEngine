@@ -144,7 +144,7 @@ static void draw_entities(
     }
 }
 
-void TRenderingSystem::do_run(
+void TRenderingSystem::run(
     const TRenderingContext& context, const TEntitiesView& entities
 ) {
     auto [width, height] = context.window->window_size();

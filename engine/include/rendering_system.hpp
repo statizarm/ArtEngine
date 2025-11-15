@@ -1,16 +1,13 @@
 #pragma once
 
-#include "position_component.hpp"
-#include "system.hpp"
+#include "entities_view.hpp"
+#include "rendering_context.hpp"
 
 namespace NArtEngine {
 
-class TRenderingSystem : public TSystem {
+class TRenderingSystem {
   public:
-    ~TRenderingSystem() = default;
-
-  protected:
-    void do_run(const TRenderingContext&, const TEntitiesView&) override;
+    void run(const TRenderingContext&, const TEntitiesView&);
 };
 
 }  // namespace NArtEngine

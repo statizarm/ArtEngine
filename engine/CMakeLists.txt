@@ -65,8 +65,10 @@ set(
     src/resource_manager.cpp
     src/resource_manager_system.cpp
     src/shader.cpp
+    src/system.cpp
     src/window.cpp
 )
+
 
 add_library(engine ${SOURCES} ${INCLUDES})
 

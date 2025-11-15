@@ -5,7 +5,7 @@
 
 namespace NArtEngine {
 
-void TMovementSystem::do_run(
+void TMovementSystem::run(
     const TRenderingContext& context, const TEntitiesView& entities
 ) {
     for (const auto& entity : entities) {

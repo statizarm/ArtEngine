@@ -4,10 +4,9 @@
 
 namespace NArtEngine {
 
-class TLifetimeSystem : public TSystem {
-  protected:
-    void do_run(const TRenderingContext& context, const TEntitiesView& entities)
-        override;
+class TLifetimeSystem {
+  public:
+    void run(const TRenderingContext& context, const TEntitiesView& entities);
 };
 
 }  // namespace NArtEngine

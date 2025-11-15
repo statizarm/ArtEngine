@@ -1,12 +1,13 @@
 #pragma once
 
-#include "system.hpp"
+#include "entities_view.hpp"
+#include "rendering_context.hpp"
+
 namespace NArtEngine {
 
-class TMovementSystem : public TSystem {
-  protected:
-    void do_run(const TRenderingContext& context, const TEntitiesView& entities)
-        override;
+class TMovementSystem {
+  public:
+    void run(const TRenderingContext& context, const TEntitiesView& entities);
 };
 
 }  // namespace NArtEngine

@@ -4,7 +4,7 @@
 
 namespace NArtEngine {
 
-void TLifetimeSystem::do_run(
+void TLifetimeSystem::run(
     const TRenderingContext& context, const TEntitiesView& entities
 ) {
     for (const auto& entity : entities) {

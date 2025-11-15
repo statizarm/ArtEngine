@@ -11,7 +11,7 @@
 
 namespace NArtEngine {
 
-class TSystem;
+class TTypeErasedSystem;
 class TEntity;
 
 class TECSEngine {
@@ -35,41 +35,28 @@ class TECSEngine {
 
     void* get_entity_component(TEntityID, TComponentTypeID);
     bool has_entity_component(TEntityID, TComponentTypeID);
+    void* add_entity_component(TEntityID, TComponentMeta);
     void remove_entity_component(TEntityID, TComponentTypeID);
 
     TEntityID add_entity();
     void remove_entity(TEntityID);
     TEntity get_entity(TEntityID);
 
-    void add_system(std::unique_ptr<TSystem> system);
+    template <typename TSystem>
+    void add_system(TSystem&&);
 
     void update(const TRenderingContext& context);
 
   private:
-    using TConstructComponent = void (*)(void*);
-    using TDestructComponent  = void (*)(void*);
-
-  private:
-    struct TComponentMeta {
-        size_t component_size;
-        TConstructComponent constructor;
-        TDestructComponent destructor;
-    };
     struct TComponentStorage {
         TComponentMeta meta;
         std::unique_ptr<uint8_t> memory;
     };
 
   private:
-    void* add_entity_component(TEntityID, TComponentTypeID, TComponentMeta);
-
-    template <CComponent TComponent>
-    TComponentMeta get_component_meta();
-
-  private:
     std::vector<std::bitset<kMaxComponents>> components_mask_;
     std::unordered_map<TComponentTypeID, TComponentStorage> components_;
-    std::vector<std::unique_ptr<TSystem>> systems_;
+    std::vector<TTypeErasedSystem> systems_;
     TEntityID first_free_entity_ = 0;
 };
 

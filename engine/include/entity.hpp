@@ -1,10 +1,11 @@
 #pragma once
 
 #include "component.hpp"
-#include "ecs_engine.hpp"
 #include "entity_id.hpp"
 
 namespace NArtEngine {
+
+class TECSEngine;
 
 class TEntity {
   public:
@@ -15,23 +16,24 @@ class TEntity {
   public:
     template <CComponent T>
     inline T& get() const {
-        return engine_->get_entity_component<T>(entity_id_);
+        return *static_cast<T*>(get_component(T::get_type_id()));
     }
     template <CComponent T>
     inline bool has() const {
-        return engine_->has_entity_component<T>(entity_id_);
+        return has_component(T::get_type_id());
     }
     template <CComponent T>
     inline T& add() const {
-        return engine_->add_entity_component<T>(entity_id_);
+        return *static_cast<T*>(add_component(TComponentMeta::get<T>()));
     }
     template <CComponent T>
     inline void remove() const {
-        engine_->remove_entity_component<T>(entity_id_);
+        remove_component(T::get_type_id());
     }
 
     void* get_component(TComponentTypeID) const;
     bool has_component(TComponentTypeID) const;
+    void* add_component(TComponentMeta) const;
     void remove_component(TComponentTypeID) const;
 
     void remove() const;

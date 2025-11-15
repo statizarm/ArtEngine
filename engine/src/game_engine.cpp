@@ -61,11 +61,11 @@ void TGameEngineImpl::init(const TGameEngineConfig &config) {
 
     resource_manager_ = TResourceManager(config.resource_manager_config);
     input_engine_.init(window_.get(), &ecs_engine_);
-    ecs_engine_.add_system(std::make_unique<TRenderingSystem>());
-    ecs_engine_.add_system(std::make_unique<TResourceManagerSystem>());
-    ecs_engine_.add_system(std::make_unique<TRemoveHandledEventSystem>());
-    ecs_engine_.add_system(std::make_unique<TLifetimeSystem>());
-    ecs_engine_.add_system(std::make_unique<TMovementSystem>());
+    ecs_engine_.add_system(TRenderingSystem());
+    ecs_engine_.add_system(TResourceManagerSystem());
+    ecs_engine_.add_system(TRemoveHandledEventSystem());
+    ecs_engine_.add_system(TLifetimeSystem());
+    ecs_engine_.add_system(TMovementSystem());
 }
 
 void TGameEngineImpl::deinit() {

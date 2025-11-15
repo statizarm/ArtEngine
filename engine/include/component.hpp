@@ -19,4 +19,27 @@ class TComponent {
     }
 };
 
+struct TComponentMeta {
+  private:
+    using TConstructor = void (*)(void*);
+    using TDestructor  = void (*)(void*);
+
+  public:
+    TComponentTypeID type_id;
+    size_t component_size;
+    TConstructor constructor;
+    TDestructor destructor;
+
+  public:
+    template <CComponent T>
+    static inline TComponentMeta get() {
+        TComponentMeta res;
+        res.type_id        = T::get_type_id();
+        res.component_size = sizeof(T);
+        res.constructor    = [](void* memory) { new (memory) T; };
+        res.destructor = [](void* memory) { static_cast<T*>(memory)->~T(); };
+        return res;
+    }
+};
+
 }  // namespace NArtEngine

@@ -1,15 +1,13 @@
 #pragma once
 
-#include "system.hpp"
+#include "entities_view.hpp"
+#include "rendering_context.hpp"
 
 namespace NArtEngine {
 
-class TResourceManagerSystem : public TSystem {
+class TResourceManagerSystem {
   public:
-    ~TResourceManagerSystem() = default;
-
-  protected:
-    void do_run(const TRenderingContext&, const TEntitiesView&) override;
+    void run(const TRenderingContext&, const TEntitiesView&);
 };
 
 }  // namespace NArtEngine

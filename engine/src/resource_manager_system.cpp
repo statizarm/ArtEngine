@@ -4,7 +4,7 @@
 
 namespace NArtEngine {
 
-void TResourceManagerSystem::do_run(
+void TResourceManagerSystem::run(
     const TRenderingContext& context, const TEntitiesView& entities
 ) {
     for (const auto& entity : entities) {
@@ -19,4 +19,5 @@ void TResourceManagerSystem::do_run(
         }
     }
 }
+
 }  // namespace NArtEngine

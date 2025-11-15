@@ -7,11 +7,11 @@
 #include "input_event_system.hpp"
 
 class TPrintInputEventSystem : public NArtEngine::TInputEventSystem {
-  protected:
-    void do_run(
+  public:
+    void run(
         const NArtEngine::TRenderingContext& context,
         const NArtEngine::TEntitiesView& entities
-    ) override {
+    ) {
         for (const auto& entity : entities) {
             if (!entity.has<NArtEngine::TEvent>()) {
                 continue;
@@ -38,7 +38,7 @@ class TGame : public NArtEngine::IGame {
     void init() override {
         auto& ecs_engine = game_engine_->get_ecs_engine();
 
-        ecs_engine.add_system(std::make_unique<TPrintInputEventSystem>());
+        ecs_engine.add_system(TPrintInputEventSystem());
     }
     void update(const NArtEngine::TRenderingContext& context) override {
     }
