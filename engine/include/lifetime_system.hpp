@@ -1,6 +1,7 @@
 #pragma once
 
-#include "system.hpp"
+#include "entities_view.hpp"
+#include "rendering_context.hpp"
 
 namespace NArtEngine {
 
