@@ -79,20 +79,12 @@ enum class EKeyAction : size_t {
 // Input events
 ///////////////////////////////////////////////////
 
-struct TInputKeyboardKeyEventComponent
-    : public TComponent<TInputKeyboardKeyEventComponent> {
+struct TKeyEvent : public TComponent<TKeyEvent> {
     EKey key              = EKey::UNKNOWN;
     EKeyAction key_action = EKeyAction::UNKNOWN;
 };
 
-struct TInputMouseKeyEventComponent
-    : public TComponent<TInputMouseKeyEventComponent> {
-    EKey key              = EKey::UNKNOWN;
-    EKeyAction key_action = EKeyAction::UNKNOWN;
-};
-
-struct TInputMouseMovedEventComponent
-    : public TComponent<TInputMouseMovedEventComponent> {
+struct TMouseMovedEvent : public TComponent<TMouseMovedEvent> {
     double prev_xpos;
     double prev_ypos;
     double curr_xpos;

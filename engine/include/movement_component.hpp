@@ -6,7 +6,7 @@
 
 namespace NArtEngine {
 
-struct TMovementComponent : public TComponent<TMovementComponent> {
+struct TMovement : public TComponent<TMovement> {
     glm::vec3 direction;
     float velocity;
 };

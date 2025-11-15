@@ -41,7 +41,7 @@ static inline GLuint create_fragment_shader(const std::string& program) {
 }
 
 EResourceLoadStatus create_shader_program(
-    std::string filecontent, TShaderProgramComponent& program
+    std::string filecontent, TShaderProgram& program
 ) {
     auto pos = filecontent.find(kShaderDelimiter);
     if (pos == std::string::npos) {
@@ -75,7 +75,7 @@ EResourceLoadStatus create_shader_program(
 }
 
 EResourceLoadStatus load_glsl_shader_resource(
-    std::istream& in, TShaderProgramComponent& program
+    std::istream& in, TShaderProgram& program
 ) {
     std::string filecontent{
         std::istreambuf_iterator<std::string::value_type>(in),

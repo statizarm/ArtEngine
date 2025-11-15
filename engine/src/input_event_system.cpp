@@ -2,17 +2,17 @@
 
 namespace NArtEngine {
 
-struct THandledEventComponent : public TComponent<THandledEventComponent> {};
+struct THandledEvent : public TComponent<THandledEvent> {};
 
 void TInputEventSystem::mark_event_handled(const TEntity& entity) {
-    entity.add_component<THandledEventComponent>();
+    entity.add<THandledEvent>();
 }
 
 void TRemoveHandledEventSystem::do_run(
     const TRenderingContext& context, const TEntitiesView& entities
 ) {
     for (const auto& entity : entities) {
-        if (entity.has_component<THandledEventComponent>()) {
+        if (entity.has<THandledEvent>()) {
             entity.remove();
         }
     }

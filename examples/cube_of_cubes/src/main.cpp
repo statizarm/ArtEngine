@@ -33,7 +33,7 @@ class TControlCameraSystem : public NArtEngine::TInputEventSystem {
         const NArtEngine::TEntity* camera = nullptr;
 
         for (const auto& entity : entities) {
-            if (entity.has_component<NArtEngine::TCameraComponent>()) {
+            if (entity.has<NArtEngine::TCamera>()) {
                 camera = &entity;
                 break;
             }
@@ -43,7 +43,7 @@ class TControlCameraSystem : public NArtEngine::TInputEventSystem {
         }
 
         for (const auto& entity : entities) {
-            if (entity.has_component<NArtEngine::TEventComponent>()) {
+            if (entity.has<NArtEngine::TEvent>()) {
                 handle_event(context, *camera, entity);
                 mark_event_handled(entity);
             }
@@ -55,22 +55,14 @@ class TControlCameraSystem : public NArtEngine::TInputEventSystem {
         const NArtEngine::TRenderingContext& context,
         const NArtEngine::TEntity& camera, const NArtEngine::TEntity& event
     ) {
-        if (event.has_component<NArtEngine::TInputMouseMovedEventComponent>()) {
+        if (event.has<NArtEngine::TMouseMovedEvent>()) {
             handle_mouse_moved_event(
-                context,
-                camera,
-                event.get_component<NArtEngine::TInputMouseMovedEventComponent>(
-                )
+                context, camera, event.get<NArtEngine::TMouseMovedEvent>()
             );
         }
-        if (event.has_component<NArtEngine::TInputKeyboardKeyEventComponent>(
-            )) {
+        if (event.has<NArtEngine::TKeyEvent>()) {
             handle_keyboard_event(
-                context,
-                camera,
-                event
-                    .get_component<NArtEngine::TInputKeyboardKeyEventComponent>(
-                    )
+                context, camera, event.get<NArtEngine::TKeyEvent>()
             );
         }
     }
@@ -78,17 +70,16 @@ class TControlCameraSystem : public NArtEngine::TInputEventSystem {
     void handle_mouse_moved_event(
         const NArtEngine::TRenderingContext& context,
         const NArtEngine::TEntity& camera,
-        const NArtEngine::TInputMouseMovedEventComponent& event
+        const NArtEngine::TMouseMovedEvent& event
     ) {
-        if (!camera.has_component<NArtEngine::TPositionComponent>()) {
+        if (!camera.has<NArtEngine::TPosition>()) {
             return;
         }
-        float dx     = event.curr_xpos - event.prev_xpos;
-        float dy     = event.curr_ypos - event.prev_ypos;
-        float xangle = glm::radians(dx) * 0.01;
-        float yangle = glm::radians(dy) * 0.01;
-        auto& camera_position =
-            camera.get_component<NArtEngine::TPositionComponent>();
+        float dx              = event.curr_xpos - event.prev_xpos;
+        float dy              = event.curr_ypos - event.prev_ypos;
+        float xangle          = glm::radians(dx) * 0.01;
+        float yangle          = glm::radians(dy) * 0.01;
+        auto& camera_position = camera.get<NArtEngine::TPosition>();
         // FIXME: rorate around z
         camera_position.rotation = glm::rotate(
             camera_position.rotation, yangle, glm::vec3{1.f, 0.f, 0.f}
@@ -100,8 +91,7 @@ class TControlCameraSystem : public NArtEngine::TInputEventSystem {
 
     void handle_keyboard_event(
         const NArtEngine::TRenderingContext& context,
-        const NArtEngine::TEntity& camera,
-        const NArtEngine::TInputKeyboardKeyEventComponent& event
+        const NArtEngine::TEntity& camera, const NArtEngine::TKeyEvent& event
     ) {
         // FIXME:: there is bullshit
         if (event.key_action == NArtEngine::EKeyAction::RELEASED) {
@@ -110,7 +100,7 @@ class TControlCameraSystem : public NArtEngine::TInputEventSystem {
                 case NArtEngine::EKey::KEY_S:
                 case NArtEngine::EKey::KEY_D:
                 case NArtEngine::EKey::KEY_A:
-                    camera.remove_component<NArtEngine::TMovementComponent>();
+                    camera.remove<NArtEngine::TMovement>();
                     break;
                 default:
                     break;
@@ -135,7 +125,7 @@ class TControlCameraSystem : public NArtEngine::TInputEventSystem {
             default:
                 return;
         }
-        auto& movement = camera.add_component<NArtEngine::TMovementComponent>();
+        auto& movement    = camera.add<NArtEngine::TMovement>();
         movement.velocity = 5.f;
         movement.direction += direction_delta;
     }
@@ -148,11 +138,10 @@ class TRotationSystem : public NArtEngine::TSystem {
         const NArtEngine::TEntitiesView& entities
     ) {
         for (const auto& entity : entities) {
-            if (entity.has_component<NArtEngine::TPositionComponent>() &&
-                !entity.has_component<NArtEngine::TCameraComponent>()) {
-                auto& position =
-                    entity.get_component<NArtEngine::TPositionComponent>();
-                float angle = glm::radians(context.current_time) * 20.f;
+            if (entity.has<NArtEngine::TPosition>() &&
+                !entity.has<NArtEngine::TCamera>()) {
+                auto& position = entity.get<NArtEngine::TPosition>();
+                float angle    = glm::radians(context.current_time) * 20.f;
 
                 position.rotation = glm::rotate(
                     glm::identity<glm::quat>(), angle, glm::vec3{0.f, 1.f, 0.f}
@@ -174,29 +163,24 @@ class TGame : public NArtEngine::IGame {
         const auto& window     = game_engine_->get_window();
         window.grab_cursor();
 
-        NArtEngine::TShaderProgramComponent shader;
-        NArtEngine::TMeshComponent mesh;
+        NArtEngine::TShaderProgram shader;
+        NArtEngine::TMesh mesh;
         auto res = resource_manager.load("resources/mesh.txt", mesh);
         res      = resource_manager.load("resources/shader.glsl", shader);
 
         auto cube = ecs_engine.add_entity();
-        ecs_engine.add_entity_component<NArtEngine::TShaderProgramComponent>(
-            cube
-        ) = shader;
-        ecs_engine.add_entity_component<NArtEngine::TMeshComponent>(cube) =
-            mesh;
+        ecs_engine.add_entity_component<NArtEngine::TShaderProgram>(cube) =
+            shader;
+        ecs_engine.add_entity_component<NArtEngine::TMesh>(cube) = mesh;
 
         camera_ = ecs_engine.add_entity();
-        ecs_engine.add_entity_component<NArtEngine::TCameraComponent>(camera_);
+        ecs_engine.add_entity_component<NArtEngine::TCamera>(camera_);
         auto& camera_position =
-            ecs_engine.add_entity_component<NArtEngine::TPositionComponent>(
-                camera_
-            );
+            ecs_engine.add_entity_component<NArtEngine::TPosition>(camera_);
 
         camera_position.position.z = 5.0f;
 
-        create_cube_of_cubes(shader, mesh, 16);
-
+        create_cube_of_cubes(shader, mesh, 8);
         ecs_engine.add_system(std::make_unique<TControlCameraSystem>());
         ecs_engine.add_system(std::make_unique<TRotationSystem>());
         ecs_engine.add_system(std::make_unique<TPrintFrameTimeSystem>());
@@ -210,16 +194,16 @@ class TGame : public NArtEngine::IGame {
 
   private:
     NArtEngine::TEntity create_cube_of_cubes(
-        const NArtEngine::TShaderProgramComponent& shader,
-        const NArtEngine::TMeshComponent& mesh, int distance
+        const NArtEngine::TShaderProgram& shader, const NArtEngine::TMesh& mesh,
+        int distance
     ) {
         static constexpr int kRowCubeCount = 3;
         auto& ecs_engine                   = game_engine_->get_ecs_engine();
         if (distance <= 1) {
             auto cube = ecs_engine.get_entity(ecs_engine.add_entity());
-            cube.add_component<NArtEngine::TMeshComponent>()          = mesh;
-            cube.add_component<NArtEngine::TShaderProgramComponent>() = shader;
-            cube.add_component<NArtEngine::TPositionComponent>();
+            cube.add<NArtEngine::TMesh>()          = mesh;
+            cube.add<NArtEngine::TShaderProgram>() = shader;
+            cube.add<NArtEngine::TPosition>();
             return cube;
         }
 
@@ -231,10 +215,8 @@ class TGame : public NArtEngine::IGame {
                 for (int k = 0; k < kRowCubeCount; ++k) {
                     auto cube =
                         create_cube_of_cubes(shader, mesh, distance >> 1);
-                    cube.add_component<NArtEngine::TParentComponent>().parent =
-                        cube_set;
-                    cube.add_component<NArtEngine::TPositionComponent>()
-                        .position = glm::vec3{
+                    cube.add<NArtEngine::TParent>().parent     = cube_set;
+                    cube.add<NArtEngine::TPosition>().position = glm::vec3{
                         static_cast<float>((i - kRowCubeCount / 2) * distance),
                         static_cast<float>((j - kRowCubeCount / 2) * distance),
                         static_cast<float>((k - kRowCubeCount / 2) * distance),
@@ -242,7 +224,7 @@ class TGame : public NArtEngine::IGame {
                 }
             }
         }
-        cube_set.add_component<NArtEngine::TPositionComponent>();
+        cube_set.add<NArtEngine::TPosition>();
         return cube_set;
     }
 

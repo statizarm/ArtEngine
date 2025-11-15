@@ -35,8 +35,8 @@ class TInputEngine::TImpl {
     void mouse_key_callback(int key, int action, int mods);
 
   private:
-    template <typename TEvent>
-    void register_event(const TEvent& event);
+    template <typename T>
+    void register_event(const T& event);
 
   private:
     TECSEngine* ecs_engine_;
@@ -74,13 +74,12 @@ void TInputEngine::TImpl::deinit() {
 // Event helpers
 ////////////////////////////////////////////////////////////////////////////////
 
-template <typename TEvent>
-void TInputEngine::TImpl::register_event(const TEvent& event) {
-    auto entity_id = ecs_engine_->add_entity();
-    ecs_engine_->add_entity_component<TEvent>(entity_id) = event;
-    ecs_engine_->add_entity_component<TEventComponent>(entity_id);
-    auto& lifetime =
-        ecs_engine_->add_entity_component<TLifetimeComponent>(entity_id);
+template <typename T>
+void TInputEngine::TImpl::register_event(const T& event) {
+    auto entity_id                                  = ecs_engine_->add_entity();
+    ecs_engine_->add_entity_component<T>(entity_id) = event;
+    ecs_engine_->add_entity_component<TEvent>(entity_id);
+    auto& lifetime  = ecs_engine_->add_entity_component<TLifetime>(entity_id);
     lifetime.frames = kEventFramesLifetime;
     lifetime.time   = 0.0;
 }
@@ -156,7 +155,7 @@ EKeyAction TranslateGLFWKeyAction(int action) {
 void TInputEngine::TImpl::key_callback(
     int key, int scancode, int action, int mods
 ) {
-    TInputKeyboardKeyEventComponent key_event = {
+    TKeyEvent key_event = {
         .key        = TranslateGLFWKey(key),
         .key_action = TranslateGLFWKeyAction(action),
     };
@@ -164,7 +163,7 @@ void TInputEngine::TImpl::key_callback(
 }
 
 void TInputEngine::TImpl::mouse_key_callback(int key, int action, int mods) {
-    TInputMouseKeyEventComponent key_event = {
+    TKeyEvent key_event = {
         .key        = TranslateGLFWKey(key),
         .key_action = TranslateGLFWKeyAction(action),
     };
@@ -172,7 +171,7 @@ void TInputEngine::TImpl::mouse_key_callback(int key, int action, int mods) {
 }
 
 void TInputEngine::TImpl::cursor_position_callback(double xpos, double ypos) {
-    TInputMouseMovedEventComponent key_event = {
+    TMouseMovedEvent key_event = {
         .prev_xpos = prev_cursor_xpos_,
         .prev_ypos = prev_cursor_ypos_,
         .curr_xpos = xpos,

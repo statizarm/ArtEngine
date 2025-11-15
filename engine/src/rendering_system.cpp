@@ -20,22 +20,20 @@ static constexpr const char* kInstanceMatrixName = "instanceMatrix";
 
 static glm::mat4 get_entity_model(TEntity entity) {
     glm::mat4 model = glm::identity<glm::mat4>();
-    if (entity.has_component<TPositionComponent>()) {
-        const auto& position = entity.get_component<TPositionComponent>();
+    if (entity.has<TPosition>()) {
+        const auto& position = entity.get<TPosition>();
 
         model = glm::translate(
             glm::mat4_cast(position.rotation), position.position
         );
     }
-    if (entity.has_component<TParentComponent>()) {
-        model =
-            get_entity_model(entity.get_component<TParentComponent>().parent) *
-            model;
+    if (entity.has<TParent>()) {
+        model = get_entity_model(entity.get<TParent>().parent) * model;
     }
     return model;
 }
 
-static glm::mat4 get_view(const TPositionComponent* camera_position) {
+static glm::mat4 get_view(const TPosition* camera_position) {
     glm::mat4 view = glm::identity<glm::mat4>();
     if (camera_position) {
         view = glm::translate(
@@ -47,11 +45,11 @@ static glm::mat4 get_view(const TPositionComponent* camera_position) {
 }
 
 static void draw_entity(
-    const TEntity& entity, const TPositionComponent* camera_position,
+    const TEntity& entity, const TPosition* camera_position,
     glm::mat4 projection
 ) {
-    const auto& mesh   = entity.get_component<TMeshComponent>();
-    const auto& shader = entity.get_component<TShaderProgramComponent>();
+    const auto& mesh   = entity.get<TMesh>();
+    const auto& shader = entity.get<TShaderProgram>();
 
     auto model = get_entity_model(entity);
     auto view  = get_view(camera_position);
@@ -68,12 +66,12 @@ static void draw_entity(
 }
 
 struct TInstanceData {
-    const TMeshComponent* mesh            = nullptr;
-    const TShaderProgramComponent* shader = nullptr;
+    const TMesh* mesh                     = nullptr;
+    const TShaderProgram* shader          = nullptr;
     std::vector<glm::mat4> model_matrices = {};
 };
 
-static bool has_instance_matrix(const TShaderProgramComponent* shader) {
+static bool has_instance_matrix(const TShaderProgram* shader) {
     auto location =
         glGetAttribLocation(shader->program_id, kInstanceMatrixName);
 
@@ -81,17 +79,16 @@ static bool has_instance_matrix(const TShaderProgramComponent* shader) {
 }
 
 static void draw_entities(
-    const TEntitiesView& entities, const TPositionComponent* camera_position,
+    const TEntitiesView& entities, const TPosition* camera_position,
     glm::mat4 projection
 ) {
     auto view = get_view(camera_position);
     // FIXME: bug with shader per vao
     std::unordered_map<GLuint, TInstanceData> instances;
     for (const auto& entity : entities) {
-        if (entity.has_component<TMeshComponent>() &&
-            entity.has_component<TShaderProgramComponent>()) {
-            auto* mesh   = &entity.get_component<TMeshComponent>();
-            auto* shader = &entity.get_component<TShaderProgramComponent>();
+        if (entity.has<TMesh>() && entity.has<TShaderProgram>()) {
+            auto* mesh   = &entity.get<TMesh>();
+            auto* shader = &entity.get<TShaderProgram>();
             if (has_instance_matrix(shader)) {
                 instances[mesh->vao].mesh   = mesh;
                 instances[mesh->vao].shader = shader;
@@ -155,17 +152,16 @@ void TRenderingSystem::do_run(
     glClearColor(.2f, .3f, .3f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    TPositionComponent* camera_position = nullptr;
-    glm::mat4 projection                = glm::perspective(
+    TPosition* camera_position = nullptr;
+    glm::mat4 projection       = glm::perspective(
         glm::radians(45.f),
         static_cast<float>(width) / static_cast<float>(height),
         0.1f,
         100.f
     );
     for (const auto& entity : entities) {
-        if (entity.has_component<TCameraComponent>() &&
-            entity.has_component<TPositionComponent>()) {
-            camera_position = &entity.get_component<TPositionComponent>();
+        if (entity.has<TCamera>() && entity.has<TPosition>()) {
+            camera_position = &entity.get<TPosition>();
             break;
         }
     }

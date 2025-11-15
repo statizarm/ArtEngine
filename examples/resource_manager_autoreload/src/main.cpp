@@ -21,32 +21,28 @@ class TGame : public NArtEngine::IGame {
         entity_ = ecs_engine.add_entity();
 
         auto& shader_component =
-            ecs_engine
-                .add_entity_component<NArtEngine::TShaderProgramComponent>(
-                    entity_
-                );
-        auto& mesh_component =
-            ecs_engine.add_entity_component<NArtEngine::TMeshComponent>(entity_
+            ecs_engine.add_entity_component<NArtEngine::TShaderProgram>(entity_
             );
+        auto& mesh_component =
+            ecs_engine.add_entity_component<NArtEngine::TMesh>(entity_);
 
         auto& resource_managed_component =
-            ecs_engine
-                .add_entity_component<NArtEngine::TResourceManagedComponent>(
-                    entity_
-                );
+            ecs_engine.add_entity_component<NArtEngine::TResourceManaged>(
+                entity_
+            );
 
         resource_managed_component.resource_manager = &resource_manager;
 
         auto res = resource_manager.load("resources/mesh.txt", mesh_component);
         if (res.status == NArtEngine::EResourceLoadStatus::OK) {
             resource_managed_component
-                .component_resources[mesh_component.get_component_type_id()] =
+                .component_resources[mesh_component.get_type_id()] =
                 res.resource_id;
         }
         res = resource_manager.load("resources/shader.glsl", shader_component);
         if (res.status == NArtEngine::EResourceLoadStatus::OK) {
             resource_managed_component
-                .component_resources[shader_component.get_component_type_id()] =
+                .component_resources[shader_component.get_type_id()] =
                 res.resource_id;
         }
     }

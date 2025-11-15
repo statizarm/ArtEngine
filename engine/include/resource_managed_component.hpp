@@ -7,8 +7,7 @@
 
 namespace NArtEngine {
 
-struct TResourceManagedComponent
-    : public TComponent<TResourceManagedComponent> {
+struct TResourceManaged : public TComponent<TResourceManaged> {
     std::unordered_map<TComponentTypeID, TResourceID> component_resources;
     TResourceManager* resource_manager;
 };

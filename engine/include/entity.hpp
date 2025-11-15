@@ -13,21 +13,21 @@ class TEntity {
     TEntity() = default;
 
   public:
-    template <CComponent TComponent>
-    inline TComponent& get_component() const {
-        return engine_->get_entity_component<TComponent>(entity_id_);
+    template <CComponent T>
+    inline T& get() const {
+        return engine_->get_entity_component<T>(entity_id_);
     }
-    template <CComponent TComponent>
-    inline bool has_component() const {
-        return engine_->has_entity_component<TComponent>(entity_id_);
+    template <CComponent T>
+    inline bool has() const {
+        return engine_->has_entity_component<T>(entity_id_);
     }
-    template <CComponent TComponent>
-    inline TComponent& add_component() const {
-        return engine_->add_entity_component<TComponent>(entity_id_);
+    template <CComponent T>
+    inline T& add() const {
+        return engine_->add_entity_component<T>(entity_id_);
     }
-    template <CComponent TComponent>
-    inline void remove_component() const {
-        engine_->remove_entity_component<TComponent>(entity_id_);
+    template <CComponent T>
+    inline void remove() const {
+        engine_->remove_entity_component<T>(entity_id_);
     }
 
     void* get_component(TComponentTypeID) const;

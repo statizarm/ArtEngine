@@ -4,6 +4,6 @@
 
 namespace NArtEngine {
 
-struct TCameraComponent : public TComponent<TCameraComponent> {};
+struct TCamera : public TComponent<TCamera> {};
 
 }  // namespace NArtEngine

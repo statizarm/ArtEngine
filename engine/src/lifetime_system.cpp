@@ -8,9 +8,8 @@ void TLifetimeSystem::do_run(
     const TRenderingContext& context, const TEntitiesView& entities
 ) {
     for (const auto& entity : entities) {
-        if (entity.has_component<TLifetimeComponent>()) {
-            auto& lifetime_component =
-                entity.get_component<TLifetimeComponent>();
+        if (entity.has<TLifetime>()) {
+            auto& lifetime_component = entity.get<TLifetime>();
             lifetime_component.frames -= 1;
             lifetime_component.time -= context.dt;
             if (lifetime_component.frames < 0 && lifetime_component.time < 0) {

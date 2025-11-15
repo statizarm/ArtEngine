@@ -19,23 +19,18 @@ class TGame : public NArtEngine::IGame {
         auto entity = ecs_engine.add_entity();
 
         auto& shader_component =
-            ecs_engine
-                .add_entity_component<NArtEngine::TShaderProgramComponent>(
-                    entity
-                );
+            ecs_engine.add_entity_component<NArtEngine::TShaderProgram>(entity);
 
         auto& mesh_component =
-            ecs_engine.add_entity_component<NArtEngine::TMeshComponent>(entity);
+            ecs_engine.add_entity_component<NArtEngine::TMesh>(entity);
 
         auto res = resource_manager.load("resources/mesh.txt", mesh_component);
         res = resource_manager.load("resources/shader.glsl", shader_component);
 
         camera_ = ecs_engine.add_entity();
-        ecs_engine.add_entity_component<NArtEngine::TCameraComponent>(camera_);
+        ecs_engine.add_entity_component<NArtEngine::TCamera>(camera_);
         auto& camera_position =
-            ecs_engine.add_entity_component<NArtEngine::TPositionComponent>(
-                camera_
-            );
+            ecs_engine.add_entity_component<NArtEngine::TPosition>(camera_);
 
         camera_position.position.z = 5.0f;
     }
@@ -43,9 +38,7 @@ class TGame : public NArtEngine::IGame {
     void update(const NArtEngine::TRenderingContext& context) override {
         auto& ecs_engine = game_engine_->get_ecs_engine();
         auto& camera_position =
-            ecs_engine.get_entity_component<NArtEngine::TPositionComponent>(
-                camera_
-            );
+            ecs_engine.get_entity_component<NArtEngine::TPosition>(camera_);
         float angle                = glm::radians(context.current_time) * 100.f;
         camera_position.position.x = 5.0 * glm::sin(angle);
         camera_position.position.z = 5.0 * glm::cos(angle);

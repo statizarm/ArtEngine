@@ -13,15 +13,12 @@ class TPrintInputEventSystem : public NArtEngine::TInputEventSystem {
         const NArtEngine::TEntitiesView& entities
     ) override {
         for (const auto& entity : entities) {
-            if (!entity.has_component<NArtEngine::TEventComponent>()) {
+            if (!entity.has<NArtEngine::TEvent>()) {
                 continue;
             }
 
-            if (entity
-                    .has_component<NArtEngine::TInputKeyboardKeyEventComponent>(
-                    )) {
-                auto& component = entity.get_component<
-                    NArtEngine::TInputKeyboardKeyEventComponent>();
+            if (entity.has<NArtEngine::TKeyEvent>()) {
+                auto& component = entity.get<NArtEngine::TKeyEvent>();
                 std::cout << "Keyboard key event: {action = "
                           << static_cast<size_t>(component.key_action)
                           << ", key = " << static_cast<size_t>(component.key)

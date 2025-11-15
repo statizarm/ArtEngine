@@ -4,7 +4,7 @@
 
 namespace NArtEngine {
 
-struct TParentComponent : public TComponent<TParentComponent> {
+struct TParent : public TComponent<TParent> {
     TEntity parent;
 };
 

@@ -15,13 +15,10 @@ class TGame : public NArtEngine::IGame {
         auto& resource_manager = game_engine_->get_resource_manager();
         entity_                = ecs_engine.add_entity();
         auto& shader_component =
-            ecs_engine
-                .add_entity_component<NArtEngine::TShaderProgramComponent>(
-                    entity_
-                );
-        auto& mesh_component =
-            ecs_engine.add_entity_component<NArtEngine::TMeshComponent>(entity_
+            ecs_engine.add_entity_component<NArtEngine::TShaderProgram>(entity_
             );
+        auto& mesh_component =
+            ecs_engine.add_entity_component<NArtEngine::TMesh>(entity_);
 
         auto res = resource_manager.load(
             "resources/triangle_mesh.txt", mesh_component

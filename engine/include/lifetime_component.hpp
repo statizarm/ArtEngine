@@ -4,7 +4,7 @@
 
 namespace NArtEngine {
 
-struct TLifetimeComponent : public TComponent<TLifetimeComponent> {
+struct TLifetime : public TComponent<TLifetime> {
     int64_t frames = 0;
     double time    = 0.0f;
 };

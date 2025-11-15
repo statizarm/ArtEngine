@@ -8,9 +8,8 @@ void TResourceManagerSystem::do_run(
     const TRenderingContext& context, const TEntitiesView& entities
 ) {
     for (const auto& entity : entities) {
-        if (entity.has_component<TResourceManagedComponent>()) {
-            const auto& component =
-                entity.get_component<TResourceManagedComponent>();
+        if (entity.has<TResourceManaged>()) {
+            const auto& component = entity.get<TResourceManaged>();
             for (const auto& [component_id, resource_id] :
                  component.component_resources) {
                 const auto& res = component.resource_manager->load(

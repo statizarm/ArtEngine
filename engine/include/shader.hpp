@@ -5,17 +5,15 @@
 
 namespace NArtEngine {
 
-struct TShaderProgramComponent : public TComponent<TShaderProgramComponent> {
+struct TShaderProgram : public TComponent<TShaderProgram> {
     uint32_t program_id;
 };
 
-EResourceLoadStatus
-load_glsl_shader_resource(std::istream&, TShaderProgramComponent&);
+EResourceLoadStatus load_glsl_shader_resource(std::istream&, TShaderProgram&);
 
 template <>
-inline EResourceLoadStatus
-load_resource<TShaderProgramComponent, EResourceFormat::GLSL>(
-    std::istream& in, TShaderProgramComponent& program
+inline EResourceLoadStatus load_resource<TShaderProgram, EResourceFormat::GLSL>(
+    std::istream& in, TShaderProgram& program
 ) {
     return load_glsl_shader_resource(in, program);
 }

@@ -4,6 +4,6 @@
 
 namespace NArtEngine {
 
-struct TEventComponent : public TComponent<TEventComponent> {};
+struct TEvent : public TComponent<TEvent> {};
 
 }  // namespace NArtEngine

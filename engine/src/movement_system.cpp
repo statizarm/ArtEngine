@@ -9,10 +9,9 @@ void TMovementSystem::do_run(
     const TRenderingContext& context, const TEntitiesView& entities
 ) {
     for (const auto& entity : entities) {
-        if (entity.has_component<TMovementComponent>() &&
-            entity.has_component<TPositionComponent>()) {
-            auto& movement = entity.get_component<TMovementComponent>();
-            auto& position = entity.get_component<TPositionComponent>();
+        if (entity.has<TMovement>() && entity.has<TPosition>()) {
+            auto& movement = entity.get<TMovement>();
+            auto& position = entity.get<TPosition>();
 
             position.position += static_cast<float>(context.dt) *
                                  movement.velocity * movement.direction;

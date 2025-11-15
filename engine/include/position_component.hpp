@@ -7,7 +7,7 @@
 
 namespace NArtEngine {
 
-struct TPositionComponent : public TComponent<TPositionComponent> {
+struct TPosition : public TComponent<TPosition> {
     glm::vec3 position = glm::vec3(0.f, 0.f, 0.f);
     glm::quat rotation = glm::identity<glm::quat>();
 };
