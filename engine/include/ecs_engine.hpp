@@ -15,6 +15,8 @@ class TTypeErasedSystem;
 class TEntity;
 
 class TECSEngine {
+    friend TEntity;
+
   public:
     static constexpr size_t kMaxEntities   = 1 << 20;
     static constexpr size_t kMaxComponents = 256;
@@ -24,6 +26,16 @@ class TECSEngine {
     ~TECSEngine();
 
   public:
+    TEntityID add_entity();
+    void remove_entity(TEntityID);
+    TEntity get_entity(TEntityID);
+
+    template <typename TSystem>
+    void add_system(TSystem&&);
+
+    void update(const TRenderingContext& context);
+
+  private:
     template <CComponent TComponent>
     inline TComponent& get_entity_component(TEntityID entity_id);
     template <CComponent TComponent>
@@ -33,19 +45,11 @@ class TECSEngine {
     template <CComponent TComponent>
     inline void remove_entity_component(TEntityID entity_id);
 
+  private:
     void* get_entity_component(TEntityID, TComponentTypeID);
     bool has_entity_component(TEntityID, TComponentTypeID);
     void* add_entity_component(TEntityID, TComponentMeta);
     void remove_entity_component(TEntityID, TComponentTypeID);
-
-    TEntityID add_entity();
-    void remove_entity(TEntityID);
-    TEntity get_entity(TEntityID);
-
-    template <typename TSystem>
-    void add_system(TSystem&&);
-
-    void update(const TRenderingContext& context);
 
   private:
     struct TComponentStorage {

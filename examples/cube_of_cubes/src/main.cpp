@@ -168,17 +168,16 @@ class TGame : public NArtEngine::IGame {
         auto res = resource_manager.load("resources/mesh.txt", mesh);
         res      = resource_manager.load("resources/shader.glsl", shader);
 
-        auto cube = ecs_engine.add_entity();
-        ecs_engine.add_entity_component<NArtEngine::TShaderProgram>(cube) =
-            shader;
-        ecs_engine.add_entity_component<NArtEngine::TMesh>(cube) = mesh;
+        auto cube_id = ecs_engine.add_entity();
+        auto cube    = ecs_engine.get_entity(cube_id);
 
-        camera_ = ecs_engine.add_entity();
-        ecs_engine.add_entity_component<NArtEngine::TCamera>(camera_);
-        auto& camera_position =
-            ecs_engine.add_entity_component<NArtEngine::TPosition>(camera_);
+        cube.add<NArtEngine::TShaderProgram>() = shader;
+        cube.add<NArtEngine::TMesh>()          = mesh;
 
-        camera_position.position.z = 5.0f;
+        camera_id_  = ecs_engine.add_entity();
+        auto camera = ecs_engine.get_entity(camera_id_);
+        camera.add<NArtEngine::TCamera>();
+        camera.add<NArtEngine::TPosition>().position.z = 5.0f;
 
         create_cube_of_cubes(shader, mesh, 8);
         ecs_engine.add_system(TControlCameraSystem());
@@ -208,8 +207,7 @@ class TGame : public NArtEngine::IGame {
         }
 
         auto cube_set_id = ecs_engine.add_entity();
-        std::cout << cube_set_id << std::endl;
-        auto cube_set = ecs_engine.get_entity(cube_set_id);
+        auto cube_set    = ecs_engine.get_entity(cube_set_id);
         for (int i = 0; i < kRowCubeCount; ++i) {
             for (int j = 0; j < kRowCubeCount; ++j) {
                 for (int k = 0; k < kRowCubeCount; ++k) {
@@ -230,7 +228,7 @@ class TGame : public NArtEngine::IGame {
 
   private:
     NArtEngine::TGameEngine* game_engine_;
-    NArtEngine::TEntityID camera_;
+    NArtEngine::TEntityID camera_id_;
 };
 
 int main() {

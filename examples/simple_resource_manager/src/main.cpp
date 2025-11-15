@@ -13,19 +13,15 @@ class TGame : public NArtEngine::IGame {
     void init() override {
         auto& ecs_engine       = game_engine_->get_ecs_engine();
         auto& resource_manager = game_engine_->get_resource_manager();
-        entity_                = ecs_engine.add_entity();
-        auto& shader_component =
-            ecs_engine.add_entity_component<NArtEngine::TShaderProgram>(entity_
-            );
-        auto& mesh_component =
-            ecs_engine.add_entity_component<NArtEngine::TMesh>(entity_);
 
-        auto res = resource_manager.load(
-            "resources/triangle_mesh.txt", mesh_component
-        );
-        res = resource_manager.load(
-            "resources/triangle_shader.glsl", shader_component
-        );
+        entity_id_  = ecs_engine.add_entity();
+        auto entity = ecs_engine.get_entity(entity_id_);
+
+        auto& shader = entity.add<NArtEngine::TShaderProgram>();
+        auto& mesh   = entity.add<NArtEngine::TMesh>();
+
+        auto res = resource_manager.load("resources/triangle_mesh.txt", mesh);
+        res = resource_manager.load("resources/triangle_shader.glsl", shader);
     }
 
     void update(const NArtEngine::TRenderingContext& context) override {
@@ -36,7 +32,7 @@ class TGame : public NArtEngine::IGame {
 
   private:
     NArtEngine::TGameEngine* game_engine_;
-    NArtEngine::TEntityID entity_;
+    NArtEngine::TEntityID entity_id_;
 };
 
 int main() {

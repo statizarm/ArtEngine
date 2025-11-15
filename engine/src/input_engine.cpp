@@ -3,8 +3,6 @@
 #include <GLFW/glfw3.h>
 
 #include <cassert>
-#include <iostream>
-#include <ostream>
 
 #include "event_component.hpp"
 #include "input_event.hpp"
@@ -76,10 +74,10 @@ void TInputEngine::TImpl::deinit() {
 
 template <typename T>
 void TInputEngine::TImpl::register_event(const T& event) {
-    auto entity_id                                  = ecs_engine_->add_entity();
-    ecs_engine_->add_entity_component<T>(entity_id) = event;
-    ecs_engine_->add_entity_component<TEvent>(entity_id);
-    auto& lifetime  = ecs_engine_->add_entity_component<TLifetime>(entity_id);
+    auto entity     = ecs_engine_->get_entity(ecs_engine_->add_entity());
+    entity.add<T>() = event;
+    entity.add<TEvent>();
+    auto& lifetime  = entity.add<TLifetime>();
     lifetime.frames = kEventFramesLifetime;
     lifetime.time   = 0.0;
 }

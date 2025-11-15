@@ -17,31 +17,23 @@ class TGame : public NArtEngine::IGame {
         auto& ecs_engine       = game_engine_->get_ecs_engine();
         auto& resource_manager = game_engine_->get_resource_manager();
 
-        entity_ = ecs_engine.add_entity();
+        entity_id_  = ecs_engine.add_entity();
+        auto entity = ecs_engine.get_entity(entity_id_);
 
-        auto& shader_component =
-            ecs_engine.add_entity_component<NArtEngine::TShaderProgram>(entity_
-            );
-        auto& mesh_component =
-            ecs_engine.add_entity_component<NArtEngine::TMesh>(entity_);
+        auto& shader           = entity.add<NArtEngine::TShaderProgram>();
+        auto& mesh             = entity.add<NArtEngine::TMesh>();
+        auto& resource_managed = entity.add<NArtEngine::TResourceManaged>();
 
-        auto& resource_managed_component =
-            ecs_engine.add_entity_component<NArtEngine::TResourceManaged>(
-                entity_
-            );
+        resource_managed.resource_manager = &resource_manager;
 
-        resource_managed_component.resource_manager = &resource_manager;
-
-        auto res = resource_manager.load("resources/mesh.txt", mesh_component);
+        auto res = resource_manager.load("resources/mesh.txt", mesh);
         if (res.status == NArtEngine::EResourceLoadStatus::OK) {
-            resource_managed_component
-                .component_resources[mesh_component.get_type_id()] =
+            resource_managed.component_resources[mesh.get_type_id()] =
                 res.resource_id;
         }
-        res = resource_manager.load("resources/shader.glsl", shader_component);
+        res = resource_manager.load("resources/shader.glsl", shader);
         if (res.status == NArtEngine::EResourceLoadStatus::OK) {
-            resource_managed_component
-                .component_resources[shader_component.get_type_id()] =
+            resource_managed.component_resources[shader.get_type_id()] =
                 res.resource_id;
         }
     }
@@ -68,7 +60,7 @@ class TGame : public NArtEngine::IGame {
 
   private:
     NArtEngine::TGameEngine* game_engine_;
-    NArtEngine::TEntityID entity_;
+    NArtEngine::TEntityID entity_id_;
 };
 
 int main() {

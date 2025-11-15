@@ -6,11 +6,13 @@
 namespace NArtEngine {
 
 class TECSEngine;
+class TResourceManagerSystem;
 
 class TEntity {
-  public:
     friend TECSEngine;
+    friend TResourceManagerSystem;
 
+  public:
     TEntity() = default;
 
   public:
@@ -31,12 +33,13 @@ class TEntity {
         remove_component(T::get_type_id());
     }
 
+    void remove() const;
+
+  private:
     void* get_component(TComponentTypeID) const;
     bool has_component(TComponentTypeID) const;
     void* add_component(TComponentMeta) const;
     void remove_component(TComponentTypeID) const;
-
-    void remove() const;
 
   private:
     TEntity(TEntityID entity_id, TECSEngine* engine);

@@ -16,30 +16,30 @@ class TGame : public NArtEngine::IGame {
         auto& ecs_engine       = game_engine_->get_ecs_engine();
         auto& resource_manager = game_engine_->get_resource_manager();
 
-        auto entity = ecs_engine.add_entity();
+        auto entity = ecs_engine.get_entity(ecs_engine.add_entity());
 
-        auto& shader_component =
-            ecs_engine.add_entity_component<NArtEngine::TShaderProgram>(entity);
+        auto& shader = entity.add<NArtEngine::TShaderProgram>();
+        auto& mesh   = entity.add<NArtEngine::TMesh>();
 
-        auto& mesh_component =
-            ecs_engine.add_entity_component<NArtEngine::TMesh>(entity);
+        auto res = resource_manager.load("resources/mesh.txt", mesh);
+        res      = resource_manager.load("resources/shader.glsl", shader);
 
-        auto res = resource_manager.load("resources/mesh.txt", mesh_component);
-        res = resource_manager.load("resources/shader.glsl", shader_component);
-
-        camera_ = ecs_engine.add_entity();
-        ecs_engine.add_entity_component<NArtEngine::TCamera>(camera_);
-        auto& camera_position =
-            ecs_engine.add_entity_component<NArtEngine::TPosition>(camera_);
+        camera_id_  = ecs_engine.add_entity();
+        auto camera = ecs_engine.get_entity(camera_id_);
+        camera.add<NArtEngine::TCamera>();
+        auto& camera_position = camera.add<NArtEngine::TPosition>();
 
         camera_position.position.z = 5.0f;
     }
 
     void update(const NArtEngine::TRenderingContext& context) override {
         auto& ecs_engine = game_engine_->get_ecs_engine();
-        auto& camera_position =
-            ecs_engine.get_entity_component<NArtEngine::TPosition>(camera_);
-        float angle                = glm::radians(context.current_time) * 100.f;
+
+        auto camera           = ecs_engine.get_entity(camera_id_);
+        auto& camera_position = camera.get<NArtEngine::TPosition>();
+
+        float angle = glm::radians(context.current_time) * 100.f;
+
         camera_position.position.x = 5.0 * glm::sin(angle);
         camera_position.position.z = 5.0 * glm::cos(angle);
         camera_position.rotation   = glm::rotate(
@@ -52,7 +52,7 @@ class TGame : public NArtEngine::IGame {
 
   private:
     NArtEngine::TGameEngine* game_engine_;
-    NArtEngine::TEntityID camera_;
+    NArtEngine::TEntityID camera_id_;
 };
 
 int main() {
